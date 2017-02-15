@@ -33,5 +33,5 @@ dependencies {
     compile 'io.reactivex:rxandroid:1.2.1'
 }
 
-//apply from: 'bintray.gradle'
-apply from: 'install.gradle'
+apply from: "$rootProject.projectDir/dist/distInfo.gradle"
+apply from: "$rootProject.projectDir/dist/bintray.gradle"

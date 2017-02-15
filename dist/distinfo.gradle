@@ -1,0 +1,18 @@
+ext.distInfo = [
+        bintrayUser       : project.hasProperty("BINTRAY_USER") ? BINTRAY_USER : "",
+        bintrayApiKey     : project.hasProperty("BINTRAY_KEY") ? BINTRAY_KEY : "",
+        bintrayRepo       : "sanqi",
+        publishedGroupId  : "com.github.Jadyli",
+        libraryVersion    : "0.1. 2",
+        libraryName       : "RetrofitClient",
+        libraryDescription: "RetrofitClient",
+        libraryArtifact   : "retrofitclient",
+
+        sitUrl            : "https://github.com/Jadyli/RetrofitClient",
+        issuesUrl         : "https://github.com/Jadyli/RetrofitClient/issues",
+        gitUrl            : "https://github.com/Jadyli/RetrofitClient.git",
+
+        developId         : "jady",
+        developName       : "JadyLi",
+        developEmail      : "1257984872@qq.com",
+]
