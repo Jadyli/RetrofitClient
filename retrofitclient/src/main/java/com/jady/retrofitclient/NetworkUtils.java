@@ -16,6 +16,7 @@ public class NetworkUtils {
                 return mNetworkInfo.isAvailable();
             }
         } catch (Exception e) {
+            e.printStackTrace();
         }
         return false;
     }

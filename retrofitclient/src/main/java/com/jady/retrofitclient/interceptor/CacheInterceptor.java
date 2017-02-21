@@ -238,7 +238,7 @@ public class CacheInterceptor implements Interceptor {
         }else{//没有网络的时候
             MediaType contentType = response.body().contentType();
             CacheModel model = cacheHelper.getCache(url);
-            if (model.getResponseData() != null){
+            if (model != null && model.getResponseData() != null){
                 Response.Builder builder = response.newBuilder()
                         .header("Cache-Control", "public, only-if-cached, max-stale=" + CacheHelper.VALID_TIME)
                         .removeHeader("Pragma")

@@ -1,6 +1,9 @@
 package com.jady.retrofitclient.callback;
 
 import android.text.TextUtils;
+import android.widget.Toast;
+
+import com.jady.retrofitclient.HttpManager;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -40,8 +43,9 @@ public abstract class HttpCallback<T> {
     }
 
     public void onFailed(String err_code, String message) {
-        if (!TextUtils.isEmpty(message)) {
+        if (!TextUtils.isEmpty(message) && HttpManager.mContext != null) {
             //you can show a toast here with a overall variant
+            Toast.makeText(HttpManager.mContext,message,Toast.LENGTH_SHORT).show();
         }
         onFailure(err_code,message);
     }

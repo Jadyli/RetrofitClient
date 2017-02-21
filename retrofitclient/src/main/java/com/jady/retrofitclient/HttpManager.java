@@ -25,7 +25,7 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
  * Created by jady on 2016/12/6.
  */
 public class HttpManager {
-    private static Context mContext;
+    public static Context mContext;
     private static volatile HttpManager httpManager;
     private static int HANDER_DELAYED_TIME = 500;
     private Map<String, String> headers;
