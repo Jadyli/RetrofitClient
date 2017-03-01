@@ -16,6 +16,8 @@ import rx.Subscriber;
 
 public class CommonResultSubscriber<T extends ResponseBody> extends Subscriber<T> {
 
+    public static final String TAG = "CommonResultSubscriber";
+
     private Context mContext;
     private boolean showLoadingDailog = false;
     private String loadingMsg;
@@ -79,7 +81,8 @@ public class CommonResultSubscriber<T extends ResponseBody> extends Subscriber<T
         if (showLoadingDailog) {
             loadingCallback.onFinishLoading();
         }
-        httpCallback.onFailed("", "服务器错误");
+        e.printStackTrace();
+        httpCallback.onFailed("", "服务器错误:" + e.getMessage());
     }
 
     @Override
@@ -87,7 +90,7 @@ public class CommonResultSubscriber<T extends ResponseBody> extends Subscriber<T
         if (t.contentLength() == 0) {
             return;
         }
-        if (httpCallback.getType() != null) {
+        if (httpCallback != null && httpCallback.getType() != null) {
             try {
                 httpCallback.onResolve(new Gson().fromJson(t.charStream(), httpCallback.getType()));
             } catch (Exception e) {
