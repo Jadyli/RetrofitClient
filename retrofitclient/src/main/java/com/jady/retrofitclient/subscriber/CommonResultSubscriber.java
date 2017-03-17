@@ -64,7 +64,7 @@ public class CommonResultSubscriber<T extends ResponseBody> extends Subscriber<T
     @Override
     public void onStart() {
         super.onStart();
-        if (showLoadingDailog) {
+        if (showLoadingDailog && loadingCallback != null) {
             loadingCallback.onStartLoading(loadingMsg);
         }
     }
@@ -78,11 +78,13 @@ public class CommonResultSubscriber<T extends ResponseBody> extends Subscriber<T
 
     @Override
     public void onError(Throwable e) {
-        if (showLoadingDailog) {
+        if (showLoadingDailog && loadingCallback != null) {
             loadingCallback.onFinishLoading();
         }
         e.printStackTrace();
-        httpCallback.onFailed("", "服务器错误:" + e.getMessage());
+        if (httpCallback != null) {
+            httpCallback.onFailed("", "服务器错误:" + e.getMessage());
+        }
     }
 
     @Override

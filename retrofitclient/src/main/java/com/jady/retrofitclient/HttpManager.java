@@ -17,6 +17,7 @@ import com.jady.retrofitclient.listener.DownloadFileListener;
 import com.jady.retrofitclient.listener.TransformProgressListener;
 import com.jady.retrofitclient.upload.FileUploadEnetity;
 
+import java.io.File;
 import java.util.Map;
 
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -26,11 +27,13 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
  */
 public class HttpManager {
     public static Context mContext;
-    private static volatile HttpManager httpManager;
+    private volatile static HttpManager httpManager;
     private static int HANDER_DELAYED_TIME = 500;
     private Map<String, String> headers;
     private static String baseUrl;
     private static OnGetHeadersListener onGetHeadersListener;
+    private static String cacheDirPath;
+    private static long maxCacheSize;
 
     private HttpManager() {
     }
@@ -66,6 +69,24 @@ public class HttpManager {
     public static void init(Context context, String baseUrl) {
         HttpManager.mContext = context;
         setBaseUrl(baseUrl);
+    }
+
+    /**
+     * 设置缓存路径和最大缓存大小
+     *
+     * @param cacheDirPath 缓存路径
+     * @param maxSize      最大缓存大小
+     */
+    public static void initCache(String cacheDirPath, long maxSize) {
+        if (TextUtils.isEmpty(cacheDirPath) || maxSize <= 0) {
+            return;
+        }
+        if (!new File(cacheDirPath).exists()) {
+            new File(cacheDirPath).mkdirs();
+        }
+
+        HttpManager.cacheDirPath = cacheDirPath;
+        HttpManager.maxCacheSize = maxSize;
     }
 
     /**

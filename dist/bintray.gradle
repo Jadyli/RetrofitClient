@@ -62,7 +62,7 @@ install {
             inceptionYear '2017'
 
             packaging 'aar'
-            groupId distInfo.publishedGroupId
+            groupId distInfo.bintaryGroupId
             artifactId distInfo.libraryArtifact
             version distInfo.libraryVersion
 

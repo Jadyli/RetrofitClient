@@ -90,6 +90,9 @@ public class RetrofitClient {
         private CacheInterceptor cacheInterceptor;
         private RequestJsonInterceptor requestJsonInterceptor;
 
+        private File cacheFileDir;
+        private long maxSize;
+
         public Builder() {
             retrofitBuilder = new Retrofit.Builder();
             okHttpClientBuilder = new OkHttpClient.Builder();
@@ -165,7 +168,9 @@ public class RetrofitClient {
 
             if (this.cacheInterceptor != null) {
                 okHttpClientBuilder.addInterceptor(this.cacheInterceptor);
-                okHttpClientBuilder.cache(new Cache(this.cacheInterceptor.getCacheFileDir(), this.cacheInterceptor.getCacheSize()));
+                if (cacheFileDir != null && cacheFileDir.exists() && maxSize > 0) {
+                    okHttpClientBuilder.cache(new Cache(cacheFileDir, maxSize));
+                }
             }
 
             okHttpClientBuilder.connectTimeout(TIME_OUT, TimeUnit.SECONDS);
@@ -244,6 +249,14 @@ public class RetrofitClient {
                 .subscribe(new CommonResultSubscriber(mContext, callback));
     }
 
+    /**
+     * 回调形式
+     *
+     * @param context
+     * @param url
+     * @param parameters
+     * @param callback
+     */
     public void get(Context context, String url, Map<String, Object> parameters, HttpCallback callback) {
         mContext = context;
 
@@ -257,6 +270,28 @@ public class RetrofitClient {
                     .doGet(url, parameters)
                     .compose(schedulerTransformer)
                     .subscribe(new CommonResultSubscriber(mContext, callback));
+        }
+    }
+
+    /**
+     * RxJava形式
+     *
+     * @param context
+     * @param url
+     * @param parameters
+     * @return
+     */
+    public Observable get(Context context, String url, Map<String, Object> parameters) {
+        mContext = context;
+
+        if (parameters == null || parameters.size() == 0) {
+            return commonRequest
+                    .doGet(url)
+                    .compose(schedulerTransformer);
+        } else {
+            return commonRequest
+                    .doGet(url, parameters)
+                    .compose(schedulerTransformer);
         }
     }
 
