@@ -232,7 +232,7 @@ public class RetrofitClient {
         try {
             Response response = call.execute();
             if (response.isSuccessful()) {
-                callback.onSuccess(response.body().string());
+                callback.onResolve(response.body().string());
             } else {
                 callback.onFailure("failure", response.message());
             }
@@ -311,7 +311,7 @@ public class RetrofitClient {
         try {
             Response response = call.execute();
             if (response.isSuccessful()) {
-                callback.onSuccess(response.body().string());
+                callback.onResolve(response.body().string());
             } else {
                 callback.onFailure("failure", response.message());
             }
