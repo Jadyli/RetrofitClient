@@ -83,7 +83,7 @@ public class CommonResultSubscriber<T extends ResponseBody> extends Subscriber<T
         }
         e.printStackTrace();
         if (httpCallback != null) {
-            httpCallback.onFailed("", "服务器错误:" + e.getMessage());
+            httpCallback.onFailure("", "服务器错误:" + e.getMessage());
         }
     }
 
@@ -96,18 +96,9 @@ public class CommonResultSubscriber<T extends ResponseBody> extends Subscriber<T
             try {
                 httpCallback.onResolve(new Gson().fromJson(t.charStream(), httpCallback.getType()));
             } catch (Exception e) {
-                httpCallback.onFailed("", "服务器返回结果解析错误");
+                httpCallback.onFailure("", "服务器返回结果解析错误");
                 e.printStackTrace();
             }
         }
-//        Gson gson = new Gson();
-//        TypeAdapter<?> adapter = gson.getAdapter(httpCallback.getType());
-//        JsonReader jsonReader = gson.newJsonReader(t.charStream());
-//        try {
-//            httpCallback.onNext(adapter.read(jsonReader));
-//        } catch (IOException e) {
-//            httpCallback.onFailure(e, e.getMessage());
-//            e.printStackTrace();
-//        }
     }
 }

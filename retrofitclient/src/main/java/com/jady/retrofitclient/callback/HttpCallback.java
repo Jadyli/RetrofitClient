@@ -1,10 +1,5 @@
 package com.jady.retrofitclient.callback;
 
-import android.text.TextUtils;
-import android.widget.Toast;
-
-import com.jady.retrofitclient.HttpManager;
-
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
@@ -26,40 +21,7 @@ public abstract class HttpCallback<T> {
         }
     }
 
-    public void onResolve(T t) {
-        if (t instanceof ServerCallback) {
-            if (((ServerCallback) t).isSuccess()) {
-                onSuccess(t);
-            } else {
-                if (enableShowToast()) {
-                    onFailed(((ServerCallback) t).getErr_code(), ((ServerCallback) t).getMessage());
-                } else {
-                    onFailure(((ServerCallback) t).getErr_code(), ((ServerCallback) t).getMessage());
-                }
-            }
-        } else {
-            onSuccess(t);
-        }
-    }
-
-    public void onFailed(String err_code, String message) {
-        if (!TextUtils.isEmpty(message) && HttpManager.mContext != null) {
-            //you can show a toast here with a overall variant
-            Toast.makeText(HttpManager.mContext,message,Toast.LENGTH_SHORT).show();
-        }
-        onFailure(err_code,message);
-    }
-
-    /**
-     * 是否允许自动弹窗显示服务器错误信息
-     *
-     * @return
-     */
-    public boolean enableShowToast() {
-        return true;
-    }
-
-    public abstract void onSuccess(T t);
+    public abstract void onResolve(T t);
 
     public abstract void onFailure(String err_code, String message);
 
