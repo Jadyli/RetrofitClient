@@ -34,6 +34,7 @@ public class HttpManager {
     private static OnGetHeadersListener onGetHeadersListener;
     private static String cacheDirPath;
     private static long maxCacheSize;
+    private static boolean showToast = false;
 
     private HttpManager() {
     }
@@ -62,13 +63,18 @@ public class HttpManager {
 
     /**
      * 初始化信息
-     *
-     * @param context 上下文
+     *  @param context 上下文
      * @param baseUrl URL前缀
+     * @param showToast should show toast on error or failure
      */
-    public static void init(Context context, String baseUrl) {
+    public static void init(Context context, String baseUrl, boolean showToast) {
         HttpManager.mContext = context;
         setBaseUrl(baseUrl);
+        HttpManager.showToast = showToast;
+    }
+
+    public static boolean isShowToast() {
+        return showToast;
     }
 
     /**

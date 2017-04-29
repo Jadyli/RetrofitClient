@@ -31,11 +31,7 @@ public abstract class HttpCallback<T> {
             if (((ServerCallback) t).isSuccess()) {
                 onSuccess(t);
             } else {
-                if (enableShowToast()) {
-                    onFailed(((ServerCallback) t).getErr_code(), ((ServerCallback) t).getMessage());
-                } else {
-                    onFailure(((ServerCallback) t).getErr_code(), ((ServerCallback) t).getMessage());
-                }
+                onFailed(((ServerCallback) t).getErr_code(), ((ServerCallback) t).getMessage());
             }
         } else {
             onSuccess(t);
@@ -43,11 +39,11 @@ public abstract class HttpCallback<T> {
     }
 
     public void onFailed(String err_code, String message) {
-        if (!TextUtils.isEmpty(message) && HttpManager.mContext != null) {
+        if (!TextUtils.isEmpty(message) && HttpManager.mContext != null && enableShowToast()) {
             //you can show a toast here with a overall variant
-            Toast.makeText(HttpManager.mContext,message,Toast.LENGTH_SHORT).show();
+            Toast.makeText(HttpManager.mContext, message, Toast.LENGTH_SHORT).show();
         }
-        onFailure(err_code,message);
+        onFailure(err_code, message);
     }
 
     /**
@@ -56,7 +52,7 @@ public abstract class HttpCallback<T> {
      * @return
      */
     public boolean enableShowToast() {
-        return true;
+        return HttpManager.isShowToast();
     }
 
     public abstract void onSuccess(T t);
