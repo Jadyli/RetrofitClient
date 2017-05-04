@@ -10,10 +10,10 @@ public abstract class HttpCallback<T> {
 
     public static final String TAG = "HttpCallback";
 
-    private Type type;
+    protected Type type;
 
     public HttpCallback() {
-        Type genericSuperclass = this.getClass().getGenericSuperclass();
+        Type genericSuperclass = getClass().getGenericSuperclass();
         if (genericSuperclass instanceof ParameterizedType) {
             this.type = ((ParameterizedType) genericSuperclass).getActualTypeArguments()[0];
         } else {
@@ -28,4 +28,5 @@ public abstract class HttpCallback<T> {
     public Type getType() {
         return type;
     }
+
 }

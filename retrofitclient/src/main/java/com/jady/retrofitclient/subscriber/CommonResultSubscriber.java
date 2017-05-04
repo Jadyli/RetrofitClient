@@ -83,7 +83,7 @@ public class CommonResultSubscriber<T extends ResponseBody> extends Subscriber<T
         }
         e.printStackTrace();
         if (httpCallback != null) {
-            httpCallback.onFailure("", "failure:" + e.getMessage());
+            httpCallback.onFailure("failure", e.getMessage());
         }
     }
 
@@ -92,11 +92,10 @@ public class CommonResultSubscriber<T extends ResponseBody> extends Subscriber<T
         if (t.contentLength() == 0) {
             return;
         }
-        if (httpCallback != null && httpCallback.getType() != null) {
+        if (httpCallback != null) {
             try {
-                httpCallback.onResolve(new Gson().fromJson(t.charStream(), httpCallback.getType()));
+                this.httpCallback.onResolve((new Gson()).fromJson(t.string(), this.httpCallback.getType()));
             } catch (Exception e) {
-                httpCallback.onFailure("", "data resolve error,please check the json response");
                 e.printStackTrace();
             }
         }
