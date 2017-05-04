@@ -96,7 +96,7 @@ public class UploadSubscriber<T extends ResponseBody> extends Subscriber<T> {
             callback.onFailure(e, e.getMessage());
         }
 //        Gson gson = new Gson();
-//        TypeAdapter<?> adapter = gson.getAdapter(callback.getType());
+//        TypeAdapter<?> adapter = gson.getAdapter(callback.getGenericityType());
 //        JsonReader jsonReader = gson.newJsonReader(t.charStream());
 //        try {
 //            callback.onNext(adapter.read(jsonReader));

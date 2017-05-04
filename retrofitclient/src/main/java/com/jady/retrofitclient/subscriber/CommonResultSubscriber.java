@@ -94,7 +94,7 @@ public class CommonResultSubscriber<T extends ResponseBody> extends Subscriber<T
         }
         if (httpCallback != null) {
             try {
-                this.httpCallback.onResolve((new Gson()).fromJson(t.string(), this.httpCallback.getType()));
+                this.httpCallback.onResolve((new Gson()).fromJson(t.string(), this.httpCallback.getGenericityType()));
             } catch (Exception e) {
                 e.printStackTrace();
             }
