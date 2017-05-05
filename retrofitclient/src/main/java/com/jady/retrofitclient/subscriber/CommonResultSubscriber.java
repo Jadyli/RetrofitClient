@@ -96,23 +96,31 @@ public class CommonResultSubscriber<T extends ResponseBody> extends Subscriber<T
             return;
         }
         if (httpCallback != null) {
+            boolean returnJson = false;
             Type genericityType = httpCallback.getGenericityType();
-            switch (((Class) genericityType).getSimpleName()) {
-                case "Object":
-                case "String":
-                    try {
-                        httpCallback.onResolve(t.string());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    break;
-                default:
-                    try {
-                        this.httpCallback.onResolve((new Gson()).fromJson(t.string(), genericityType));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    break;
+            if (genericityType instanceof Class) {
+                switch (((Class) genericityType).getSimpleName()) {
+                    case "Object":
+                    case "String":
+                        returnJson = true;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            if (returnJson) {
+                try {
+                    httpCallback.onResolve(t.string());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                try {
+                    this.httpCallback.onResolve((new Gson()).fromJson(t.string(), genericityType));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
