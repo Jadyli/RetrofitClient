@@ -7,6 +7,9 @@ import com.google.gson.Gson;
 import com.jady.retrofitclient.callback.HttpCallback;
 import com.jady.retrofitclient.callback.LoadingCallback;
 
+import java.io.IOException;
+import java.lang.reflect.Type;
+
 import okhttp3.ResponseBody;
 import rx.Subscriber;
 
@@ -93,10 +96,23 @@ public class CommonResultSubscriber<T extends ResponseBody> extends Subscriber<T
             return;
         }
         if (httpCallback != null) {
-            try {
-                this.httpCallback.onResolve((new Gson()).fromJson(t.string(), this.httpCallback.getGenericityType()));
-            } catch (Exception e) {
-                e.printStackTrace();
+            Type genericityType = httpCallback.getGenericityType();
+            switch (((Class) genericityType).getSimpleName()) {
+                case "Object":
+                case "String":
+                    try {
+                        httpCallback.onResolve(t.string());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                default:
+                    try {
+                        this.httpCallback.onResolve((new Gson()).fromJson(t.string(), genericityType));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
             }
         }
     }

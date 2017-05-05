@@ -22,5 +22,6 @@
 -keepattributes *Annotation*
 -keepattributes Signature
 -keepattributes SourceFile,LineNumberTable
--keep public class com.jady.retrofitclient.callback.HttpCallback
--keep public class com.jady.retrofitclient.callback.**
+-keep public class com.jady.retrofitclient.callback.HttpCallback {
+    public abstract void onFailure(***);
+}
