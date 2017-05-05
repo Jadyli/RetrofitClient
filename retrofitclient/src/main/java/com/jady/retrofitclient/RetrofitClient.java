@@ -1,6 +1,7 @@
 package com.jady.retrofitclient;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.jady.retrofitclient.callback.FileResponseResult;
 import com.jady.retrofitclient.callback.HttpCallback;
@@ -193,7 +194,7 @@ public class RetrofitClient {
             if (this.gsonConverterInterceptor != null) {
                 retrofitBuilder.addConverterFactory(gsonConverterInterceptor);
             }
-            if (baseUrl.startsWith("http"))
+            if (!TextUtils.isEmpty(baseUrl) && baseUrl.startsWith("http"))
                 retrofitBuilder.baseUrl(baseUrl);
             retrofitBuilder.client(okHttpClient);
             retrofit = retrofitBuilder.build();

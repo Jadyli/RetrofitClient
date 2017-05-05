@@ -15,3 +15,12 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-dontpreverify
+-verbose
+-printmapping proguardMapping.txt
+-keepattributes *Annotation*
+-keepattributes Signature
+-keepattributes SourceFile,LineNumberTable
+-keep public class com.jady.retrofitclient.callback.HttpCallback
+-keep public class com.jady.retrofitclient.callback.**

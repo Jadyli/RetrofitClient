@@ -30,7 +30,7 @@ public class HttpManager {
     private volatile static HttpManager httpManager;
     private static int HANDER_DELAYED_TIME = 500;
     private Map<String, String> headers;
-    private static String baseUrl;
+    private static String baseUrl = "";
     private static OnGetHeadersListener onGetHeadersListener;
     private static String cacheDirPath;
     private static long maxCacheSize;
@@ -166,7 +166,7 @@ public class HttpManager {
      * @param callback   网络回调
      */
     public void getFullPath(String url, Map<String, Object> parameters, HttpCallback callback) {
-        getRetrofitBuilder(null).build().getFullPath(mContext, url, parameters, callback);
+        getRetrofitBuilder("").build().getFullPath(mContext, url, parameters, callback);
     }
 
     /**
@@ -188,7 +188,7 @@ public class HttpManager {
      * @param callback   网络回调
      */
     public void postFullPath(String url, Map<String, Object> parameters, HttpCallback callback) {
-        getRetrofitBuilder(null).build().postFullPath(mContext, url, parameters, callback);
+        getRetrofitBuilder("").build().postFullPath(mContext, url, parameters, callback);
     }
 
 //    /**
