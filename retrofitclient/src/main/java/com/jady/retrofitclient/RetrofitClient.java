@@ -3,11 +3,13 @@ package com.jady.retrofitclient;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
 import com.jady.retrofitclient.callback.FileResponseResult;
 import com.jady.retrofitclient.callback.HttpCallback;
 import com.jady.retrofitclient.download.DownloadInterceptor;
 import com.jady.retrofitclient.interceptor.CacheInterceptor;
 import com.jady.retrofitclient.interceptor.HeaderAddInterceptor;
+import com.jady.retrofitclient.interceptor.OffLineIntercept;
 import com.jady.retrofitclient.interceptor.RequestJsonInterceptor;
 import com.jady.retrofitclient.interceptor.UploadFileInterceptor;
 import com.jady.retrofitclient.listener.TransformProgressListener;
@@ -90,6 +92,7 @@ public class RetrofitClient {
         private DownloadInterceptor downLoadFileInterceptor;
         private CacheInterceptor cacheInterceptor;
         private RequestJsonInterceptor requestJsonInterceptor;
+        private OffLineIntercept offLineIntercept;
 
         private File cacheFileDir;
         private long maxSize;
@@ -114,10 +117,15 @@ public class RetrofitClient {
             return this;
         }
 
-//        public Builder addRequestComInterceptor(RequestComInterceptor factory){
-//            this.commonInterceptor = factory;
-//            return this;
-//        }
+        public Builder addOffLineIntercept(OffLineIntercept offLineIntercept) {
+            this.offLineIntercept = offLineIntercept;
+            return this;
+        }
+
+        public Builder addRequestJsonInterceptor(RequestJsonInterceptor requestJsonInterceptor) {
+            this.requestJsonInterceptor = requestJsonInterceptor;
+            return this;
+        }
 
         public Builder addGsonConverterInterceptor(GsonConverterFactory factory) {
             this.gsonConverterInterceptor = factory;
@@ -175,6 +183,8 @@ public class RetrofitClient {
             }
 
             okHttpClientBuilder.connectTimeout(TIME_OUT, TimeUnit.SECONDS);
+            okHttpClientBuilder.readTimeout(TIME_OUT, TimeUnit.SECONDS);
+            okHttpClientBuilder.writeTimeout(TIME_OUT, TimeUnit.SECONDS);
             if (isLog)
                 okHttpClientBuilder.addNetworkInterceptor(
                         new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
@@ -220,6 +230,40 @@ public class RetrofitClient {
                 .subscribe(new CommonResultSubscriber(mContext, callback));
     }
 
+    public void put(Context context, String url, Map<String, Object> parameters, HttpCallback callback) {
+        this.mContext = context;
+        commonRequest
+                .doPut(url, parameters)
+                .compose(schedulerTransformer)
+                .subscribe(new CommonResultSubscriber(mContext, callback));
+    }
+
+    public void delete(Context context, String url, Map<String, Object> parameters, HttpCallback callback) {
+        this.mContext = context;
+        commonRequest
+                .doDelete(url, parameters)
+                .compose(schedulerTransformer)
+                .subscribe(new CommonResultSubscriber(mContext, callback));
+    }
+
+    public void postNotEncoded(Context context, String url, Map<String, Object> parameters, HttpCallback callback) {
+        this.mContext = context;
+        commonRequest
+                .doPostNotEncoded(url, parameters)
+                .compose(schedulerTransformer)
+                .subscribe(new CommonResultSubscriber(mContext, callback));
+    }
+
+    public <T> void postByBody(Context context, String url, T t, HttpCallback callback) {
+        this.mContext = context;
+        String parameters = new Gson().toJson(t);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), parameters);
+        commonRequest
+                .doPost(url, body)
+                .compose(schedulerTransformer)
+                .subscribe(new CommonResultSubscriber(mContext, callback));
+    }
+
     public void syncPost(Context context, String url, Map<String, Object> parameters, HttpCallback callback) {
         this.mContext = context;
         FormBody.Builder builder = new FormBody.Builder();
@@ -235,7 +279,7 @@ public class RetrofitClient {
             if (response.isSuccessful()) {
                 callback.onResolve(response.body().string());
             } else {
-                callback.onFailure("failure", response.message());
+                callback.onFailed("failure", response.message());
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -314,7 +358,7 @@ public class RetrofitClient {
             if (response.isSuccessful()) {
                 callback.onResolve(response.body().string());
             } else {
-                callback.onFailure("failure", response.message());
+                callback.onFailed("failure", response.message());
             }
         } catch (IOException e) {
             e.printStackTrace();

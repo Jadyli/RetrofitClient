@@ -26,19 +26,19 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
-    compile 'com.squareup.retrofit2:retrofit:2.1.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
-    compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
+    compile 'com.squareup.retrofit2:retrofit:2.3.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.3.0'
     compile 'com.squareup.okhttp3:logging-interceptor:3.4.1'
     compile 'io.reactivex:rxandroid:1.2.1'
 
-    compile 'com.trello:rxlifecycle:1.0'
+//    compile 'com.trello:rxlifecycle:1.0'
 
 // If you want to bind to Android-specific lifecycles
-    compile 'com.trello:rxlifecycle-android:1.0'
+//    compile 'com.trello:rxlifecycle-android:1.0'
 
 // If you want pre-written Activities and Fragments you can subclass as providers
-    compile 'com.trello:rxlifecycle-components:1.0'
+//    compile 'com.trello:rxlifecycle-components:1.0'
 
     // If you want to use Navi for providers
 //    compile 'com.trello:rxlifecycle-navi:1.0'

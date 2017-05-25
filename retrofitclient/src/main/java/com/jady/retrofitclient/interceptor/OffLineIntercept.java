@@ -37,4 +37,8 @@ public class OffLineIntercept implements Interceptor {
         }
         return chain.proceed(request);
     }
+
+    public static OffLineIntercept create(Context context){
+        return new OffLineIntercept(context);
+    }
 }

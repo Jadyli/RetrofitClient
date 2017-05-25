@@ -5,7 +5,7 @@ ext.distInfo = [
         publishedGroupId  : "com.jady",
 //        publishedGroupId  : "com.github.Jadyli",
         bintaryGroupId  : "com.jady",
-        libraryVersion    : "0.2.2",
+        libraryVersion    : "0.2.5",
         libraryName       : "RetrofitClient",
         libraryDescription: "RetrofitClient",
         libraryArtifact   : "retrofitclient",

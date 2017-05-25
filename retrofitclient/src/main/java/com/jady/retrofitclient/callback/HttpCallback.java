@@ -23,7 +23,7 @@ public abstract class HttpCallback<T> {
 
     public abstract void onResolve(T t);
 
-    public abstract void onFailure(String err_code, String message);
+    public abstract void onFailed(String err_code, String message);
 
     public Type getGenericityType() {
         return genericityType;

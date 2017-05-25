@@ -11,7 +11,8 @@ import com.jady.retrofitclient.callback.FileResponseResult;
 import com.jady.retrofitclient.callback.HttpCallback;
 import com.jady.retrofitclient.download.DownloadInfo;
 import com.jady.retrofitclient.download.DownloadManager;
-import com.jady.retrofitclient.interceptor.CacheInterceptor;
+import com.jady.retrofitclient.interceptor.OffLineIntercept;
+import com.jady.retrofitclient.interceptor.RequestJsonInterceptor;
 import com.jady.retrofitclient.interceptor.UploadFileInterceptor;
 import com.jady.retrofitclient.listener.DownloadFileListener;
 import com.jady.retrofitclient.listener.TransformProgressListener;
@@ -21,6 +22,7 @@ import java.io.File;
 import java.util.Map;
 
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by jady on 2016/12/6.
@@ -34,7 +36,6 @@ public class HttpManager {
     private static OnGetHeadersListener onGetHeadersListener;
     private static String cacheDirPath;
     private static long maxCacheSize;
-    private static boolean showToast = false;
 
     private HttpManager() {
     }
@@ -63,18 +64,13 @@ public class HttpManager {
 
     /**
      * 初始化信息
-     *  @param context 上下文
+     *
+     * @param context 上下文
      * @param baseUrl URL前缀
-     * @param showToast should show toast on error or failure
      */
-    public static void init(Context context, String baseUrl, boolean showToast) {
+    public static void init(Context context, String baseUrl) {
         HttpManager.mContext = context;
         setBaseUrl(baseUrl);
-        HttpManager.showToast = showToast;
-    }
-
-    public static boolean isShowToast() {
-        return showToast;
     }
 
     /**
@@ -103,8 +99,11 @@ public class HttpManager {
      */
     public RetrofitClient.Builder getRetrofitBuilder(String baseUrl) {
         RetrofitClient.Builder builder = new RetrofitClient.Builder()
-                .addCacheInterceptor(CacheInterceptor.create(mContext))
+//                .addCacheInterceptor(CacheInterceptor.create(mContext))
+                .addGsonConverterInterceptor(GsonConverterFactory.create())
                 .addRxJavaCallAdapterInterceptor(RxJavaCallAdapterFactory.create())
+                .addRequestJsonInterceptor(RequestJsonInterceptor.create())
+                .addOffLineIntercept(OffLineIntercept.create(mContext))
                 .isLog(true);
         if (onGetHeadersListener != null) {
             Map<String, String> headers = onGetHeadersListener.getHeaders();
@@ -159,6 +158,17 @@ public class HttpManager {
     }
 
     /**
+     * 同步Get
+     *
+     * @param url
+     * @param parameters
+     * @param callback
+     */
+    public void syncGet(String url, Map<String, Object> parameters, HttpCallback callback) {
+        getRetrofitBuilder(baseUrl).build().syncGet(mContext, url, parameters, callback);
+    }
+
+    /**
      * 发送Get请求
      *
      * @param url        请求相对地址，地址共同部分前缀在{@link #getRetrofitBuilder(String)}中设置
@@ -179,6 +189,59 @@ public class HttpManager {
     public void post(String url, Map<String, Object> parameters, HttpCallback callback) {
         getRetrofitBuilder(baseUrl).build().post(mContext, url, parameters, callback);
     }
+
+    /**
+     * 发送Put请求
+     *
+     * @param url        请求相对地址，地址共同部分前缀在{@link #getRetrofitBuilder(String)}中设置
+     * @param parameters 请求参数
+     * @param callback   网络回调
+     */
+    public void put(String url, Map<String, Object> parameters, HttpCallback callback) {
+        getRetrofitBuilder(baseUrl).build().put(mContext, url, parameters, callback);
+    }
+
+    /**
+     * 发送DELETE请求
+     *
+     * @param url        请求相对地址，地址共同部分前缀在{@link #getRetrofitBuilder(String)}中设置
+     * @param parameters 请求参数
+     * @param callback   网络回调
+     */
+    public void delete(String url, Map<String, Object> parameters, HttpCallback callback) {
+        getRetrofitBuilder(baseUrl).build().delete(mContext, url, parameters, callback);
+    }
+
+    public void postNotEncoded(String url, Map<String, Object> parameters, HttpCallback callback) {
+        getRetrofitBuilder(baseUrl).build().postNotEncoded(mContext, url, parameters, callback);
+    }
+
+    /**
+     * 同步Post
+     *
+     * @param url
+     * @param parameters
+     * @param callback
+     */
+    public void syncPost(String url, Map<String, Object> parameters, HttpCallback callback) {
+        getRetrofitBuilder(baseUrl).build().syncPost(mContext, url, parameters, callback);
+    }
+
+    /**
+     * 注意，此方法传到服务器的是一个json串
+     *
+     * @param url
+     * @param body
+     * @param callback
+     * @param <T>
+     */
+    public <T> void postByBody(String url, T body, HttpCallback callback) {
+        getRetrofitBuilder(baseUrl).build().postByBody(mContext, url, body, callback);
+    }
+
+//    public void postNotEncoded(String url, Map<String, Object> parameters, HttpCallback callback) {
+//        getRetrofitBuilder(baseUrl).addDecodeParameterInteceptor(RecodeParameterInteceptor.create()).build().post(mContext, url, parameters, callback);
+//    }
 
     /**
      * 发送Post请求

@@ -86,7 +86,7 @@ public class CommonResultSubscriber<T extends ResponseBody> extends Subscriber<T
         }
         e.printStackTrace();
         if (httpCallback != null) {
-            httpCallback.onFailure("failure", e.getMessage());
+            httpCallback.onFailed("failure", e.getMessage());
         }
     }
 
@@ -113,12 +113,14 @@ public class CommonResultSubscriber<T extends ResponseBody> extends Subscriber<T
                 try {
                     httpCallback.onResolve(t.string());
                 } catch (IOException e) {
+                    httpCallback.onFailed("failure", e.getMessage());
                     e.printStackTrace();
                 }
             } else {
                 try {
                     this.httpCallback.onResolve((new Gson()).fromJson(t.string(), genericityType));
                 } catch (Exception e) {
+                    httpCallback.onFailed("failure", e.getMessage());
                     e.printStackTrace();
                 }
             }

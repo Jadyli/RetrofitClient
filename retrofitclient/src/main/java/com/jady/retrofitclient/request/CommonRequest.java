@@ -4,11 +4,14 @@ import java.util.Map;
 
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
+import retrofit2.http.Body;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.HTTP;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.PartMap;
 import retrofit2.http.Path;
 import retrofit2.http.QueryMap;
@@ -45,6 +48,18 @@ public interface CommonRequest {
     @FormUrlEncoded
     @POST("{path}")
     Observable<ResponseBody> doPost(@Path(value = "path", encoded = true) String url, @FieldMap Map<String, Object> map);
+
+    @POST("{path}")
+    Observable<ResponseBody> doPost(@Path(value = "path", encoded = true) String url, @Body RequestBody body);
+
+    @PUT("{path}")
+    Observable<ResponseBody> doPut(@Path(value = "path", encoded = true) String url, @Body Map<String, Object> map);
+
+    @HTTP(method = "DELETE",path = "{path}",hasBody = true)
+    Observable<ResponseBody> doDelete(@Path(value = "path", encoded = true) String url, @Body Map<String, Object> map);
+
+    @POST("{path}")
+    Observable<ResponseBody> doPostNotEncoded(@Path(value = "path", encoded = true) String url, @Body Map<String, Object> map);
 
     /**
      * 完整路径

@@ -23,5 +23,5 @@
 -keepattributes Signature
 -keepattributes SourceFile,LineNumberTable
 -keep public class com.jady.retrofitclient.callback.HttpCallback {
-    public abstract void onFailure(***);
+    public abstract void onFailed(***);
 }
