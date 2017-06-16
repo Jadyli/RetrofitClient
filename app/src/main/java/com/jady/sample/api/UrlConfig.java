@@ -1,0 +1,17 @@
+package com.jady.sample.api;
+
+/**
+ * Created by lipingfa on 2017/6/12.
+ */
+public class UrlConfig {
+    //baseUrl
+    public static final String BASE_URL = "http://192.168.0.101:8080/retrofitclientserver/";
+    //图片列表
+    public static final String IMG_LIST = "list";
+    //最新图片
+    public static final String NEWS = "news";
+    //图片前缀
+    public static final String IMG_PREFIX = "http://tnfs.tngou.net/image";
+
+    public static final String USER_INFO = "user/info";
+}

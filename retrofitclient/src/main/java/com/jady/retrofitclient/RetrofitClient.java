@@ -204,8 +204,13 @@ public class RetrofitClient {
             if (this.gsonConverterInterceptor != null) {
                 retrofitBuilder.addConverterFactory(gsonConverterInterceptor);
             }
-            if (!TextUtils.isEmpty(baseUrl) && baseUrl.startsWith("http"))
-                retrofitBuilder.baseUrl(baseUrl);
+            if (!TextUtils.isEmpty(baseUrl)) {
+                if (baseUrl.startsWith("http")) {
+                    retrofitBuilder.baseUrl(baseUrl);
+                } else {
+                    throw new RuntimeException("base url不合法，请以http开头");
+                }
+            }
             retrofitBuilder.client(okHttpClient);
             retrofit = retrofitBuilder.build();
 

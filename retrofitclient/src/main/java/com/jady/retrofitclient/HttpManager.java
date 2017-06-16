@@ -71,6 +71,7 @@ public class HttpManager {
     public static void init(Context context, String baseUrl) {
         HttpManager.mContext = context;
         setBaseUrl(baseUrl);
+        initCache(context.getCacheDir() + "/http", 10 * 1024 * 1024);
     }
 
     /**
