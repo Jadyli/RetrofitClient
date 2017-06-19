@@ -5,6 +5,7 @@ import java.util.Map;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -35,6 +36,9 @@ public interface CommonRequest {
     Observable<ResponseBody> doGet(@Path(value = "path", encoded = true) String url, @QueryMap Map<String, Object> map);
 
     @GET("{path}")
+    Observable<ResponseBody> doGet(@Path(value = "path", encoded = true) String url, @Body RequestBody map);
+
+    @GET("{path}")
     Observable<ResponseBody> doGet(@Path(value = "path", encoded = true) String url);
 
     /**
@@ -52,14 +56,18 @@ public interface CommonRequest {
     @POST("{path}")
     Observable<ResponseBody> doPost(@Path(value = "path", encoded = true) String url, @Body RequestBody body);
 
+    @FormUrlEncoded
     @PUT("{path}")
-    Observable<ResponseBody> doPut(@Path(value = "path", encoded = true) String url, @Body Map<String, Object> map);
+    Observable<ResponseBody> doPut(@Path(value = "path", encoded = true) String url, @FieldMap Map<String, Object> map);
 
-    @HTTP(method = "DELETE",path = "{path}",hasBody = true)
-    Observable<ResponseBody> doDelete(@Path(value = "path", encoded = true) String url, @Body Map<String, Object> map);
+    @PUT("{path}")
+    Observable<ResponseBody> doPut(@Path(value = "path", encoded = true) String url, @Body RequestBody body);
 
-    @POST("{path}")
-    Observable<ResponseBody> doPostNotEncoded(@Path(value = "path", encoded = true) String url, @Body Map<String, Object> map);
+    @DELETE("{path}")
+    Observable<ResponseBody> doDelete(@Path(value = "path", encoded = true) String url);
+
+    @HTTP(method = "DELETE", path = "{path}", hasBody = true)
+    Observable<ResponseBody> doDelete(@Path(value = "path", encoded = true) String url, @Body RequestBody body);
 
     /**
      * 完整路径
@@ -81,15 +89,14 @@ public interface CommonRequest {
     Observable<ResponseBody> doGetFullPath(@Url String url, @QueryMap Map<String, Object> map);
 
     /**
-     * 参数含有@Field和@FieldMap的请求必须加@FormUrlEncoded
-     * Post请求最好用@Field,@Query也行，只是参数会暴露在Url中
+     * 完整路径
      *
-     * @param url 完整路径
+     * @param url
+     * @param body
      * @return
      */
-    @FormUrlEncoded
-    @POST
-    Observable<ResponseBody> doPostFullPath(@Url String url);
+    @GET
+    Observable<ResponseBody> doGetFullPath(@Url String url, @Body RequestBody body);
 
     /**
      * 参数含有@Field和@FieldMap的请求必须加@FormUrlEncoded
@@ -102,6 +109,17 @@ public interface CommonRequest {
     @FormUrlEncoded
     @POST
     Observable<ResponseBody> doPostFullPath(@Url String url, @FieldMap Map<String, Object> map);
+
+    /**
+     * 参数含有@Field和@FieldMap的请求必须加@FormUrlEncoded
+     * Post请求最好用@Field,@Query也行，只是参数会暴露在Url中
+     *
+     * @param url  完整路径
+     * @param body
+     * @return
+     */
+    @POST
+    Observable<ResponseBody> doPostFullPath(@Url String url, @Body RequestBody body);
 
     @Multipart
     @POST("{path}")

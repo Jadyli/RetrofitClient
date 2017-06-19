@@ -1,36 +1,191 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/btn_base_request_get"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="15dp"
-        android:background="@color/colorPrimary"
-        android:gravity="center"
-        android:padding="5dp"
-        android:text="get请求"
-        android:textColor="#ffffffff"
-        android:textSize="18dp" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tv_base_request_get"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="15dp"
-        android:background="#666363"
-        android:gravity="left"
-        android:minHeight="90dp"
-        android:padding="5dp"
-        android:text="no content"
-        android:textColor="#ffffffff"
-        android:textSize="18dp" />
+        <Button
+            android:id="@+id/btn_base_request_get"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="15dp"
+            android:background="@color/colorPrimary"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="发送get请求"
+            android:textAllCaps="false"
+            android:textColor="#ffffffff"
+            android:textSize="18dp" />
 
-</LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_base_request_get"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="15dp"
+            android:background="#666363"
+            android:gravity="left"
+            android:minHeight="90dp"
+            android:padding="5dp"
+            android:text="no content"
+            android:textColor="#ffffffff"
+            android:textSize="18dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="用户名："
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/et_base_request_post_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="100dp"
+                android:text="jady"
+                android:textColor="@color/black"
+                android:textSize="17sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:text="密码："
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/et_base_request_post_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="100dp"
+                android:text="1234"
+                android:textColor="@color/black"
+                android:textSize="17sp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_base_request_post_map"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="15dp"
+            android:background="@color/colorPrimary"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="发送post请求(参数是Map)"
+            android:textAllCaps="false"
+            android:textColor="#ffffffff"
+            android:textSize="18dp" />
+
+        <Button
+            android:id="@+id/btn_base_request_post_body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="15dp"
+            android:background="@color/colorPrimary"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="发送post请求(RequestBody形式，参数是对象)"
+            android:textAllCaps="false"
+            android:textColor="#ffffffff"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/tv_base_request_post"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="15dp"
+            android:background="#666363"
+            android:gravity="left"
+            android:minHeight="90dp"
+            android:padding="5dp"
+            android:text="no content"
+            android:textColor="#ffffffff"
+            android:textSize="18dp" />
+
+        <Button
+            android:id="@+id/btn_base_request_put"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="15dp"
+            android:background="@color/colorPrimary"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="发送put请求"
+            android:textAllCaps="false"
+            android:textColor="#ffffffff"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/tv_base_request_put"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="15dp"
+            android:background="#666363"
+            android:gravity="left"
+            android:minHeight="90dp"
+            android:padding="5dp"
+            android:text="no content"
+            android:textColor="#ffffffff"
+            android:textSize="18dp" />
+
+        <Button
+            android:id="@+id/btn_base_request_delete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="15dp"
+            android:background="@color/colorPrimary"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="发送delete请求"
+            android:textAllCaps="false"
+            android:textColor="#ffffffff"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/tv_base_request_delete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="15dp"
+            android:background="#666363"
+            android:gravity="left"
+            android:minHeight="90dp"
+            android:padding="5dp"
+            android:text="no content"
+            android:textColor="#ffffffff"
+            android:textSize="18dp" />
+
+    </LinearLayout>
+</ScrollView>

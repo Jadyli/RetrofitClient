@@ -5,7 +5,7 @@ package com.jady.sample.api;
  */
 public class UrlConfig {
     //baseUrl
-    public static final String BASE_URL = "http://192.168.0.101:8080/retrofitclientserver/";
+    public static final String BASE_URL = "http://192.168.0.127:8080/retrofitclientserver/";
     //图片列表
     public static final String IMG_LIST = "list";
     //最新图片
@@ -14,4 +14,8 @@ public class UrlConfig {
     public static final String IMG_PREFIX = "http://tnfs.tngou.net/image";
 
     public static final String USER_INFO = "user/info";
+    public static final String USER_LOGIN = "user/login";
+    public static final String USER_LOGIN_BY_BODY = "user/loginByBody";
+    public static final String USER_UPDATE = "user/update";
+    public static final String FEED_DELETE = "feed/delete";
 }

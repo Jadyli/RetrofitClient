@@ -7,6 +7,8 @@ public class ServerCallbackModel<T> {
     private long server_time;
     private T data;
     private boolean success;
+    private String err_code;
+    private String message;
 
     public long getServer_time() {
         return server_time;
@@ -32,4 +34,30 @@ public class ServerCallbackModel<T> {
         this.success = success;
     }
 
+    public String getErr_code() {
+        return err_code;
+    }
+
+    public void setErr_code(String err_code) {
+        this.err_code = err_code;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    @Override
+    public String toString() {
+        return "ServerCallbackModel{" +
+                "server_time=" + server_time +
+                ", data=" + data +
+                ", success=" + success +
+                ", err_code='" + err_code + '\'' +
+                ", message='" + message + '\'' +
+                '}';
+    }
 }

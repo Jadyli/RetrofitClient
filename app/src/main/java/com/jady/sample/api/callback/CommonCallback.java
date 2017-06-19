@@ -22,7 +22,7 @@ public abstract class CommonCallback<T> extends HttpCallback<T> {
         onFailure(error_code, error_message);
     }
 
-    public abstract void onSuccess(T v);
+    public abstract void onSuccess(T data);
 
     public abstract void onFailure(String error_code, String error_message);
 

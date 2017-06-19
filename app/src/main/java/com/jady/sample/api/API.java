@@ -4,6 +4,7 @@ import android.support.annotation.IntRange;
 
 import com.jady.retrofitclient.HttpManager;
 import com.jady.retrofitclient.callback.HttpCallback;
+import com.jady.sample.bean.UserForLogin;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -56,6 +57,32 @@ public class API {
     }
 
     public static void testGet(HttpCallback callback) {
-        HttpManager.getInstance().get(UrlConfig.USER_INFO, null, callback);
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("aaa", "adafd");
+        HttpManager.getInstance().addHeaders(headers).get(UrlConfig.USER_INFO, null, callback);
+    }
+
+    public static void testPost(String name, String password, HttpCallback callback) {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("name", name);
+        parameters.put("password", password);
+        HttpManager.getInstance().post(UrlConfig.USER_LOGIN, parameters, callback);
+    }
+
+    public static void testPost(UserForLogin userForLogin, HttpCallback callback) {
+        HttpManager.getInstance().postByBody(UrlConfig.USER_LOGIN_BY_BODY, userForLogin, callback);
+    }
+
+    public static void testPut(String putContent, HttpCallback callback) {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("name", putContent);
+//        parameters.put("age", 18);
+        HttpManager.getInstance().put(UrlConfig.USER_UPDATE, parameters, callback);
+    }
+
+    public static void testDelete(int feedId, HttpCallback callback) {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("feed_id", feedId);
+        HttpManager.getInstance().deleteByBody(UrlConfig.FEED_DELETE, parameters, callback);
     }
 }

@@ -12,17 +12,16 @@ import com.jady.retrofitclient.callback.HttpCallback;
 import com.jady.retrofitclient.download.DownloadInfo;
 import com.jady.retrofitclient.download.DownloadManager;
 import com.jady.retrofitclient.interceptor.OffLineIntercept;
-import com.jady.retrofitclient.interceptor.RequestJsonInterceptor;
 import com.jady.retrofitclient.interceptor.UploadFileInterceptor;
 import com.jady.retrofitclient.listener.DownloadFileListener;
 import com.jady.retrofitclient.listener.TransformProgressListener;
 import com.jady.retrofitclient.upload.FileUploadEnetity;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
 
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by jady on 2016/12/6.
@@ -31,7 +30,10 @@ public class HttpManager {
     public static Context mContext;
     private volatile static HttpManager httpManager;
     private static int HANDER_DELAYED_TIME = 500;
-    private Map<String, String> headers;
+    /**
+     * 这个headers是每次请求动态更新的，用完需要清掉
+     */
+    private Map<String, String> tmpHeaders;
     private static String baseUrl = "";
     private static OnGetHeadersListener onGetHeadersListener;
     private static String cacheDirPath;
@@ -101,24 +103,41 @@ public class HttpManager {
     public RetrofitClient.Builder getRetrofitBuilder(String baseUrl) {
         RetrofitClient.Builder builder = new RetrofitClient.Builder()
 //                .addCacheInterceptor(CacheInterceptor.create(mContext))
-                .addGsonConverterInterceptor(GsonConverterFactory.create())
+//                .addGsonConverterInterceptor(GsonConverterFactory.create())
                 .addRxJavaCallAdapterInterceptor(RxJavaCallAdapterFactory.create())
-                .addRequestJsonInterceptor(RequestJsonInterceptor.create())
+//                .addRequestJsonInterceptor(RequestJsonInterceptor.create())
                 .addOffLineIntercept(OffLineIntercept.create(mContext))
                 .isLog(true);
-        if (onGetHeadersListener != null) {
-            Map<String, String> headers = onGetHeadersListener.getHeaders();
-            if (headers != null) {
-                setHeaders(headers);
-                builder.addHeader(headers);
-            }
-        } else if (headers != null) {
-            builder.addHeader(headers);
-        }
+
+        handleHeaders(builder);
+
         if (!TextUtils.isEmpty(baseUrl)) {
             builder.baseUrl(baseUrl);
         }
         return builder;
+    }
+
+    private void handleHeaders(RetrofitClient.Builder builder) {
+        Map<String, String> headerMap = new HashMap<>();
+        if (onGetHeadersListener != null) {
+            Map<String, String> listenerHeaders = onGetHeadersListener.getHeaders();
+            if (listenerHeaders != null) {
+                headerMap.putAll(listenerHeaders);
+            }
+        }
+        //动态添加的headers的优先级要高于固定的onGetHeadersListener中的
+        if (this.tmpHeaders != null && this.tmpHeaders.size() > 0) {
+            headerMap.putAll(this.tmpHeaders);
+            //这个headers是每次请求动态更新的，所以用完需要清掉
+            this.tmpHeaders.clear();
+        }
+        if (headerMap.get("Content-Type") == null) {
+            headerMap.put("Content-Type", "application/json; charset=utf-8");
+        }
+        if (headerMap.get("Accept") == null) {
+            headerMap.put("Accept", "application/json");
+        }
+        builder.addHeader(headerMap);
     }
 
     /**
@@ -126,12 +145,13 @@ public class HttpManager {
      *
      * @return
      */
-    public void setHeaders(Map<String, String> headers) {
-        this.headers = headers;
+    public HttpManager addHeaders(Map<String, String> headers) {
+        this.tmpHeaders = headers;
+        return this;
     }
 
-    public Map<String, String> getHeaders() {
-        return headers;
+    public Map<String, String> getTmpHeaders() {
+        return tmpHeaders;
     }
 
     /**
@@ -194,6 +214,17 @@ public class HttpManager {
     /**
      * 发送Put请求
      *
+     * @param url      请求相对地址，地址共同部分前缀在{@link #getRetrofitBuilder(String)}中设置
+     * @param body     请求体
+     * @param callback 网络回调
+     */
+    public <T> void putByBody(String url, T body, HttpCallback callback) {
+        getRetrofitBuilder(baseUrl).build().putByBody(mContext, url, body, callback);
+    }
+
+    /**
+     * 发送Put请求
+     *
      * @param url        请求相对地址，地址共同部分前缀在{@link #getRetrofitBuilder(String)}中设置
      * @param parameters 请求参数
      * @param callback   网络回调
@@ -205,16 +236,22 @@ public class HttpManager {
     /**
      * 发送DELETE请求
      *
-     * @param url        请求相对地址，地址共同部分前缀在{@link #getRetrofitBuilder(String)}中设置
-     * @param parameters 请求参数
-     * @param callback   网络回调
+     * @param url      请求相对地址，地址共同部分前缀在{@link #getRetrofitBuilder(String)}中设置
+     * @param callback 网络回调
      */
-    public void delete(String url, Map<String, Object> parameters, HttpCallback callback) {
-        getRetrofitBuilder(baseUrl).build().delete(mContext, url, parameters, callback);
+    public void delete(String url, HttpCallback callback) {
+        getRetrofitBuilder(baseUrl).build().delete(mContext, url, callback);
     }
 
-    public void postNotEncoded(String url, Map<String, Object> parameters, HttpCallback callback) {
-        getRetrofitBuilder(baseUrl).build().postNotEncoded(mContext, url, parameters, callback);
+    /**
+     * 发送DELETE请求
+     *
+     * @param url      请求相对地址，地址共同部分前缀在{@link #getRetrofitBuilder(String)}中设置
+     * @param body     请求参数
+     * @param callback 网络回调
+     */
+    public <T> void deleteByBody(String url, T body, HttpCallback callback) {
+        getRetrofitBuilder(baseUrl).build().deleteByBody(mContext, url, body, callback);
     }
 
     /**

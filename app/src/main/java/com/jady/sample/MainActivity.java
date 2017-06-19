@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
         tlMain.setTabMode(TabLayout.MODE_SCROLLABLE);
         tlMain.setTabTextColors(getResources().getColor(R.color.white), getResources().getColor(R.color.colorAccent));
         tlMain.setSelectedTabIndicatorColor(getResources().getColor(R.color.colorAccent));
-
     }
 
     private void updateData() {

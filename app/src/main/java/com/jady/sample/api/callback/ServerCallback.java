@@ -18,7 +18,7 @@ public abstract class ServerCallback<T, V> extends HttpCallback<T> {
             if (callbackData.isSuccess()) {
                 this.onSuccess(result);
             } else {
-                onFailed("", "");
+                onFailed(callbackData.getErr_code(), callbackData.getMessage());
             }
         } else {
             onSuccess((V) t);
@@ -28,12 +28,12 @@ public abstract class ServerCallback<T, V> extends HttpCallback<T> {
     @Override
     public void onFailed(String error_code, String error_message) {
         if (enableShowToast()) {
-            Toast.makeText(HttpManager.mContext, error_message, Toast.LENGTH_SHORT);
+            Toast.makeText(HttpManager.mContext, error_message, Toast.LENGTH_SHORT).show();
         }
         onFailure(error_code, error_message);
     }
 
-    public abstract void onSuccess(V v);
+    public abstract void onSuccess(V data);
 
     public abstract void onFailure(String error_code, String error_message);
 

@@ -235,6 +235,16 @@ public class RetrofitClient {
                 .subscribe(new CommonResultSubscriber(mContext, callback));
     }
 
+    public <T> void putByBody(Context context, String url, T body, HttpCallback callback) {
+        this.mContext = context;
+        String parameters = new Gson().toJson(body);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), parameters);
+        commonRequest
+                .doPut(url, requestBody)
+                .compose(schedulerTransformer)
+                .subscribe(new CommonResultSubscriber(mContext, callback));
+    }
+
     public void put(Context context, String url, Map<String, Object> parameters, HttpCallback callback) {
         this.mContext = context;
         commonRequest
@@ -243,18 +253,20 @@ public class RetrofitClient {
                 .subscribe(new CommonResultSubscriber(mContext, callback));
     }
 
-    public void delete(Context context, String url, Map<String, Object> parameters, HttpCallback callback) {
+    public void delete(Context context, String url, HttpCallback callback) {
         this.mContext = context;
         commonRequest
-                .doDelete(url, parameters)
+                .doDelete(url)
                 .compose(schedulerTransformer)
                 .subscribe(new CommonResultSubscriber(mContext, callback));
     }
 
-    public void postNotEncoded(Context context, String url, Map<String, Object> parameters, HttpCallback callback) {
+    public <T> void deleteByBody(Context context, String url, T body, HttpCallback callback) {
         this.mContext = context;
+        String parameters = new Gson().toJson(body);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), parameters);
         commonRequest
-                .doPostNotEncoded(url, parameters)
+                .doDelete(url, requestBody)
                 .compose(schedulerTransformer)
                 .subscribe(new CommonResultSubscriber(mContext, callback));
     }
