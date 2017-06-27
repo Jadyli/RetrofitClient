@@ -1,4 +1,4 @@
-package com.jady.sample.view;
+package com.jady.sample.fragment;
 
 import android.Manifest;
 import android.app.ProgressDialog;
