@@ -15,7 +15,10 @@ import okhttp3.Response;
  * Created by Yuan on 2016/10/30.
  * Detail cache for http 如果离线缓存与在线缓存同时使用，在线的时候必须先将离线缓存清空
  */
-
+/**
+ * 离线时，20秒内会使用离线缓存
+ * Created by jady on 2016/12/8.
+ */
 public class CacheInterceptor implements Interceptor {
 
     private final String TAG = "CacheInterceptor";

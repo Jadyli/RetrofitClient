@@ -82,4 +82,9 @@ public class DownloadSubscriber<T> extends Subscriber<T> implements TransformPro
                     });
         }
     }
+
+    @Override
+    public void onFailed(String msg) {
+
+    }
 }

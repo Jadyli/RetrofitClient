@@ -5,4 +5,6 @@ package com.jady.retrofitclient.listener;
  */
 public interface TransformProgressListener {
     void onProgress(long contentRead, long contentLength, boolean completed);
+
+    void onFailed(String msg);
 }

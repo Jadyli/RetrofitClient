@@ -2,6 +2,7 @@ package com.jady.retrofitclient.request;
 
 import java.util.Map;
 
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.http.Body;
@@ -13,6 +14,7 @@ import retrofit2.http.HTTP;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Part;
 import retrofit2.http.PartMap;
 import retrofit2.http.Path;
 import retrofit2.http.QueryMap;
@@ -66,6 +68,9 @@ public interface CommonRequest {
     @DELETE("{path}")
     Observable<ResponseBody> doDelete(@Path(value = "path", encoded = true) String url);
 
+    @DELETE("{path}")
+    Observable<ResponseBody> doDelete(@Path(value = "path", encoded = true) String url, @QueryMap Map<String, Object> maps);
+
     @HTTP(method = "DELETE", path = "{path}", hasBody = true)
     Observable<ResponseBody> doDelete(@Path(value = "path", encoded = true) String url, @Body RequestBody body);
 
@@ -89,16 +94,6 @@ public interface CommonRequest {
     Observable<ResponseBody> doGetFullPath(@Url String url, @QueryMap Map<String, Object> map);
 
     /**
-     * 完整路径
-     *
-     * @param url
-     * @param body
-     * @return
-     */
-    @GET
-    Observable<ResponseBody> doGetFullPath(@Url String url, @Body RequestBody body);
-
-    /**
      * 参数含有@Field和@FieldMap的请求必须加@FormUrlEncoded
      * Post请求最好用@Field,@Query也行，只是参数会暴露在Url中
      *
@@ -110,21 +105,26 @@ public interface CommonRequest {
     @POST
     Observable<ResponseBody> doPostFullPath(@Url String url, @FieldMap Map<String, Object> map);
 
-    /**
-     * 参数含有@Field和@FieldMap的请求必须加@FormUrlEncoded
-     * Post请求最好用@Field,@Query也行，只是参数会暴露在Url中
-     *
-     * @param url  完整路径
-     * @param body
-     * @return
-     */
+    @Multipart
+    @POST("{path}")
+    Observable<ResponseBody> uploadFile(@Path(value = "path", encoded = true) String url,
+                                        @Part("description") RequestBody description, @Part MultipartBody.Part file);
+
+    @Multipart
     @POST
-    Observable<ResponseBody> doPostFullPath(@Url String url, @Body RequestBody body);
+    Observable<ResponseBody> uploadFileFullPath(@Url String url,
+                                                @Part("description") RequestBody description, @Part MultipartBody.Part file);
 
     @Multipart
     @POST("{path}")
-    Observable<ResponseBody> uploadFile(
+    Observable<ResponseBody> uploadFiles(
             @Path(value = "path", encoded = true) String url,
+            @PartMap Map<String, RequestBody> maps);
+
+    @Multipart
+    @POST
+    Observable<ResponseBody> uploadFilesFullPath(
+            @Url String url,
             @PartMap() Map<String, RequestBody> maps);
 
     //支持大文件

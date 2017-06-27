@@ -9,8 +9,8 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 /**
- * Created by Yuan on 2016/8/26.
- * Detail 下載攔截器
+ * 下载拦截器
+ * Created by jady on 2016/12/8.
  */
 public class DownloadInterceptor implements Interceptor {
 
@@ -43,7 +43,7 @@ public class DownloadInterceptor implements Interceptor {
     }
 
     public static DownloadInterceptor create(DownloadInfo downloadInfo, TransformProgressListener progressListener) {
-        return new DownloadInterceptor(downloadInfo,progressListener);
+        return new DownloadInterceptor(downloadInfo, progressListener);
     }
 
 }

@@ -18,4 +18,6 @@ public class UrlConfig {
     public static final String USER_LOGIN_BY_BODY = "user/loginByBody";
     public static final String USER_UPDATE = "user/update";
     public static final String FEED_DELETE = "feed/delete";
+    public static final String SINGLE_FILE_UPLOAD = "file/upload/single";
+    public static final String MULTIPLE_FILE_UPLOAD = "file/upload/multiple";
 }

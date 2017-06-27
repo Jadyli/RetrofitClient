@@ -9,8 +9,8 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 /**
- * Created by Yuan on 2016/8/24.
- * Detail　依赖自定义添加头部时
+ * 请求头
+ * Created by jady on 2016/12/8.
  */
 public class HeaderAddInterceptor implements Interceptor {
 

@@ -4,9 +4,11 @@ import android.support.annotation.IntRange;
 
 import com.jady.retrofitclient.HttpManager;
 import com.jady.retrofitclient.callback.HttpCallback;
+import com.jady.retrofitclient.listener.TransformProgressListener;
 import com.jady.sample.bean.UserForLogin;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -59,7 +61,7 @@ public class API {
     public static void testGet(HttpCallback callback) {
         HashMap<String, String> headers = new HashMap<>();
         headers.put("aaa", "adafd");
-        HttpManager.getInstance().addHeaders(headers).get(UrlConfig.USER_INFO, null, callback);
+        HttpManager.getInstance().addTmpHeaders(headers).get(UrlConfig.USER_INFO, null, callback);
     }
 
     public static void testPost(String name, String password, HttpCallback callback) {
@@ -84,5 +86,13 @@ public class API {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("feed_id", feedId);
         HttpManager.getInstance().deleteByBody(UrlConfig.FEED_DELETE, parameters, callback);
+    }
+
+    public static void testSingleFileUpload(String url, String filePath, String fileDes, TransformProgressListener iProgress) {
+        HttpManager.getInstance().uploadFile(url, filePath, fileDes, iProgress);
+    }
+
+    public static void testMultipleFileUpload(String url, List<String> filePathList, TransformProgressListener iProgress) {
+        HttpManager.getInstance().uploadFiles(url, filePathList, iProgress);
     }
 }

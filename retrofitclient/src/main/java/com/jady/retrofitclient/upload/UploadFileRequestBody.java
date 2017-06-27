@@ -24,9 +24,9 @@ public class UploadFileRequestBody extends RequestBody {
     private BufferedSink bufferedSink;
 
 
-    public UploadFileRequestBody(File file, TransformProgressListener progressListener) {
-        this.mRequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-        this.mProgressListener = progressListener;
+    public UploadFileRequestBody(File file , TransformProgressListener progressListener) {
+        this.mRequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file) ;
+        this.mProgressListener = progressListener ;
     }
 
     public UploadFileRequestBody(RequestBody requestBody, TransformProgressListener progressListener) {

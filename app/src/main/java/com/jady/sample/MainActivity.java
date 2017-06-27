@@ -7,6 +7,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
 import com.jady.sample.view.BaseRequestFragment;
+import com.jady.sample.view.FileUploadFragment;
 import com.jady.sample.view.MainVpAdapter;
 
 import java.util.ArrayList;
@@ -31,10 +32,11 @@ public class MainActivity extends AppCompatActivity {
 
         List<Fragment> fragmentList = new ArrayList<>();
         fragmentList.add(BaseRequestFragment.newInstance());
-        fragmentList.add(BaseRequestFragment.newInstance());
-        fragmentList.add(BaseRequestFragment.newInstance());
-        fragmentList.add(BaseRequestFragment.newInstance());
-        String[] titles = {"基本请求", "文件上传", "文件下载", "Demo"};
+        fragmentList.add(FileUploadFragment.newInstance());
+//        fragmentList.add(BaseRequestFragment.newInstance());
+//        fragmentList.add(BaseRequestFragment.newInstance());
+//        String[] titles = {"基本请求", "文件上传", "文件下载", "Demo"};
+        String[] titles = {"基本请求", "文件上传"};
         MainVpAdapter adapter = new MainVpAdapter(getSupportFragmentManager(), fragmentList, titles);
         vpMain.setAdapter(adapter);
 //        vpReportIncomeSetting.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tlReportIncomeSetting));

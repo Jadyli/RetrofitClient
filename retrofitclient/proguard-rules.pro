@@ -25,3 +25,6 @@
 -keep public class com.jady.retrofitclient.callback.HttpCallback {
     public abstract void onFailed(***);
 }
+
+-dontwarn okio.**
+-dontwarn javax.annotation.**

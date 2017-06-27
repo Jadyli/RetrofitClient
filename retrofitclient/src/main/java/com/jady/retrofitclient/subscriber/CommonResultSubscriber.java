@@ -16,7 +16,6 @@ import rx.Subscriber;
 /**
  * Created by jady on 2016/12/8.
  */
-
 public class CommonResultSubscriber<T extends ResponseBody> extends Subscriber<T> {
 
     public static final String TAG = "CommonResultSubscriber";

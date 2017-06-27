@@ -1,8 +1,5 @@
 package com.jady.retrofitclient.download;
 
-import android.text.TextUtils;
-
-import com.jady.retrofitclient.HttpManager;
 import com.jady.retrofitclient.request.CommonRequest;
 import com.jady.retrofitclient.subscriber.DownloadSubscriber;
 
@@ -64,9 +61,6 @@ public class DownloadManager {
                     .client(builder.build())
                     .addConverterFactory(GsonConverterFactory.create())
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
-            if (!TextUtils.isEmpty(HttpManager.getInstance().getBaseUrl())) {
-                retrofitBuilder.baseUrl(HttpManager.getInstance().getBaseUrl());
-            }
             commonRequest = retrofitBuilder.build().create(CommonRequest.class);
             info.setRequest(commonRequest);
             downloadInfos.add(info);

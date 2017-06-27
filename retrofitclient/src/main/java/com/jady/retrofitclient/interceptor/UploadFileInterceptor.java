@@ -7,8 +7,8 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 /**
- * Created by Yuan on 2016/8/24.
- * Detail 支持文件上传header
+ * 文件上传
+ * Created by jady on 2016/12/8.
  */
 public class UploadFileInterceptor implements Interceptor {
 
@@ -21,7 +21,7 @@ public class UploadFileInterceptor implements Interceptor {
         return chain.proceed(request);
     }
 
-    public static UploadFileInterceptor create(){
+    public static UploadFileInterceptor create() {
         return new UploadFileInterceptor();
     }
 }

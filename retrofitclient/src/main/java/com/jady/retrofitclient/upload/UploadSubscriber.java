@@ -14,7 +14,6 @@ import rx.Subscriber;
 /**
  * Created by jady on 2016/12/8.
  */
-
 public class UploadSubscriber<T extends ResponseBody> extends Subscriber<T> {
 
     private Context mContext;

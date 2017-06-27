@@ -7,29 +7,26 @@ import com.google.gson.Gson;
 import com.jady.retrofitclient.callback.FileResponseResult;
 import com.jady.retrofitclient.callback.HttpCallback;
 import com.jady.retrofitclient.download.DownloadInterceptor;
-import com.jady.retrofitclient.interceptor.CacheInterceptor;
 import com.jady.retrofitclient.interceptor.HeaderAddInterceptor;
 import com.jady.retrofitclient.interceptor.OffLineIntercept;
-import com.jady.retrofitclient.interceptor.RequestJsonInterceptor;
 import com.jady.retrofitclient.interceptor.UploadFileInterceptor;
-import com.jady.retrofitclient.listener.TransformProgressListener;
 import com.jady.retrofitclient.request.CommonRequest;
 import com.jady.retrofitclient.subscriber.CommonResultSubscriber;
-import com.jady.retrofitclient.upload.FileUploadEnetity;
 import com.jady.retrofitclient.upload.UploadFileRequestBody;
 import com.jady.retrofitclient.upload.UploadSubscriber;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import okhttp3.Cache;
 import okhttp3.Call;
 import okhttp3.FormBody;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -90,12 +87,7 @@ public class RetrofitClient {
         private RxJavaCallAdapterFactory javaCallAdapterInterceptor;
         private UploadFileInterceptor uploadFileInterceptor;
         private DownloadInterceptor downLoadFileInterceptor;
-        private CacheInterceptor cacheInterceptor;
-        private RequestJsonInterceptor requestJsonInterceptor;
         private OffLineIntercept offLineIntercept;
-
-        private File cacheFileDir;
-        private long maxSize;
 
         public Builder() {
             retrofitBuilder = new Retrofit.Builder();
@@ -122,11 +114,6 @@ public class RetrofitClient {
             return this;
         }
 
-        public Builder addRequestJsonInterceptor(RequestJsonInterceptor requestJsonInterceptor) {
-            this.requestJsonInterceptor = requestJsonInterceptor;
-            return this;
-        }
-
         public Builder addGsonConverterInterceptor(GsonConverterFactory factory) {
             this.gsonConverterInterceptor = factory;
             return this;
@@ -147,11 +134,6 @@ public class RetrofitClient {
             return this;
         }
 
-        public Builder addCacheInterceptor(CacheInterceptor interceptor) {
-            this.cacheInterceptor = interceptor;
-            return this;
-        }
-
         public Builder client(OkHttpClient client) {
             this.okHttpClient = client;
             return this;
@@ -163,9 +145,6 @@ public class RetrofitClient {
         }
 
         public void createHttpClient() {
-            if (this.requestJsonInterceptor != null) {
-                okHttpClientBuilder.addInterceptor(this.requestJsonInterceptor);
-            }
 
             if (this.uploadFileInterceptor != null) {
                 okHttpClientBuilder.addInterceptor(this.uploadFileInterceptor);
@@ -175,11 +154,8 @@ public class RetrofitClient {
                 okHttpClientBuilder.addInterceptor(this.downLoadFileInterceptor);
             }
 
-            if (this.cacheInterceptor != null) {
-                okHttpClientBuilder.addInterceptor(this.cacheInterceptor);
-                if (cacheFileDir != null && cacheFileDir.exists() && maxSize > 0) {
-                    okHttpClientBuilder.cache(new Cache(cacheFileDir, maxSize));
-                }
+            if (this.offLineIntercept != null) {
+                okHttpClientBuilder.addInterceptor(this.offLineIntercept);
             }
 
             okHttpClientBuilder.connectTimeout(TIME_OUT, TimeUnit.SECONDS);
@@ -261,6 +237,14 @@ public class RetrofitClient {
                 .subscribe(new CommonResultSubscriber(mContext, callback));
     }
 
+    public void delete(Context context, String url, Map<String, Object> parameters, HttpCallback callback) {
+        this.mContext = context;
+        commonRequest
+                .doDelete(url, parameters)
+                .compose(schedulerTransformer)
+                .subscribe(new CommonResultSubscriber(mContext, callback));
+    }
+
     public <T> void deleteByBody(Context context, String url, T body, HttpCallback callback) {
         this.mContext = context;
         String parameters = new Gson().toJson(body);
@@ -303,10 +287,10 @@ public class RetrofitClient {
         }
     }
 
-    public void postFullPath(Context context, String url, Map<String, Object> parameters, HttpCallback callback) {
+    public void postFullPath(Context context, String fullUrl, Map<String, Object> parameters, HttpCallback callback) {
         this.mContext = context;
         commonRequest
-                .doPostFullPath(url, parameters)
+                .doPostFullPath(fullUrl, parameters)
                 .compose(schedulerTransformer)
                 .subscribe(new CommonResultSubscriber(mContext, callback));
     }
@@ -382,48 +366,111 @@ public class RetrofitClient {
         }
     }
 
-    public void getFullPath(Context context, String url, Map<String, Object> parameters, HttpCallback callback) {
+    public void getFullPath(Context context, String fullUrl, Map<String, Object> parameters, HttpCallback callback) {
         mContext = context;
 
         if (parameters == null || parameters.size() == 0) {
             commonRequest
-                    .doGetFullPath(url)
+                    .doGetFullPath(fullUrl)
                     .compose(schedulerTransformer)
                     .subscribe(new CommonResultSubscriber(mContext, callback));
         } else {
             commonRequest
-                    .doGetFullPath(url, parameters)
+                    .doGetFullPath(fullUrl, parameters)
                     .compose(schedulerTransformer)
                     .subscribe(new CommonResultSubscriber(mContext, callback));
         }
-
     }
 
-    public void upLoadFiles(final FileUploadEnetity enetity, final FileResponseResult callback) {
-        List<File> files = enetity.getFiles();
+    public void uploadFile(String url, String filePath, String fileDes, boolean isFullUrl, final FileResponseResult callback) {
+        final File file = new File(filePath);
+        if (!file.exists()) {
+            return;
+        }
+
+        RequestBody description = RequestBody.create(MediaType.parse("multipart/form-data; charset=utf-8"), fileDes);
+
+//        UploadFileRequestBody requestBody = new UploadFileRequestBody(file, new TransformProgressListener() {
+//            private long curUploadProgress = 0;
+//
+//            @Override
+//            public void onProgress(long progress, long total, boolean completed) {
+//                if (completed) {
+//                    curUploadProgress += total;
+//                }
+//                callback.onExecuting(curUploadProgress + (progress), file.length(), curUploadProgress + (progress) == file.length());
+//            }
+//
+//            @Override
+//            public void onFailed(String msg) {
+//                callback.onFailure(null, msg);
+//            }
+//        });
+        RequestBody requestBody = UploadFileRequestBody.create(MediaType.parse("multipart/form-data"), file);
+        MultipartBody.Part part = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
+        if (isFullUrl) {
+            commonRequest.uploadFileFullPath(url, description, part)
+                    .compose(schedulerTransformer)
+                    .subscribe(new UploadSubscriber(mContext, callback));
+        } else {
+            commonRequest.uploadFile(url, description, part)
+                    .compose(schedulerTransformer)
+                    .subscribe(new UploadSubscriber(mContext, callback));
+        }
+    }
+
+    private long curUploadProgress = 0;
+
+    public void uploadFiles(String url, List<String> filePathList, boolean isFullUrl, final FileResponseResult callback) {
+        curUploadProgress = 0;
+        if (filePathList == null || filePathList.size() == 0) {
+            return;
+        }
+        List<File> fileList = new ArrayList<>();
+        long totalSize = 0;
+        for (String filePath : filePathList) {
+            File file = new File(filePath);
+            if (!file.exists()) {
+                continue;
+            }
+            totalSize += file.length();
+            fileList.add(file);
+        }
+
         HashMap<String, RequestBody> params = new HashMap<>();
-        for (int i = 0; i < files.size(); i++) {
-            File file = files.get(i);
+        for (int i = 0; i < fileList.size(); i++) {
+            File file = fileList.get(i);
             RequestBody body =
                     RequestBody.create(MediaType.parse("multipart/form-data"), file);
 
-            UploadFileRequestBody body_up = new UploadFileRequestBody(body, new TransformProgressListener() {
-                private long curUploadProgress = 0;
-
-                @Override
-                public void onProgress(long progress, long total, boolean completed) {
-                    if (completed) {
-                        curUploadProgress += total;
-                    }
-                    callback.onExecuting(curUploadProgress + (progress), enetity.getFilesTotalSize(), curUploadProgress + (progress) == enetity.getFilesTotalSize());
-                }
-            });
-            params.put("file[]\"; filename=\"" + file.getName(), body_up);
+//            final long finalTotalSize = totalSize;
+//            UploadFileRequestBody body_up = new UploadFileRequestBody(file, new TransformProgressListener() {
+//
+//                @Override
+//                public void onProgress(long progress, long total, boolean completed) {
+//                    if (completed) {
+//                        curUploadProgress += total;
+//                    }
+//                    callback.onExecuting(curUploadProgress + (progress), finalTotalSize, curUploadProgress + (progress) == finalTotalSize);
+//                }
+//
+//                @Override
+//                public void onFailed(String msg) {
+//                    callback.onFailure(null, msg);
+//                }
+//            });
+            params.put("file[]\"; filename=\"" + file.getName(), body);
+//            params.put("file[]\"; filename=\"" + file.getName(), body);
         }
-
-        commonRequest.uploadFile(enetity.getUrl(), params)
-                .compose(schedulerTransformer)
-                .subscribe(new UploadSubscriber(mContext, callback));
+        if (isFullUrl) {
+            commonRequest.uploadFilesFullPath(url, params)
+                    .compose(schedulerTransformer)
+                    .subscribe(new UploadSubscriber(mContext, callback));
+        } else {
+            commonRequest.uploadFiles(url, params)
+                    .compose(schedulerTransformer)
+                    .subscribe(new UploadSubscriber(mContext, callback));
+        }
     }
 
     Observable.Transformer schedulerTransformer = new Observable.Transformer() {

@@ -15,10 +15,10 @@ import com.jady.retrofitclient.interceptor.OffLineIntercept;
 import com.jady.retrofitclient.interceptor.UploadFileInterceptor;
 import com.jady.retrofitclient.listener.DownloadFileListener;
 import com.jady.retrofitclient.listener.TransformProgressListener;
-import com.jady.retrofitclient.upload.FileUploadEnetity;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -35,6 +35,7 @@ public class HttpManager {
      */
     private Map<String, String> tmpHeaders;
     private static String baseUrl = "";
+    private String tmpBaseUrl = "";
     private static OnGetHeadersListener onGetHeadersListener;
     private static String cacheDirPath;
     private static long maxCacheSize;
@@ -73,7 +74,6 @@ public class HttpManager {
     public static void init(Context context, String baseUrl) {
         HttpManager.mContext = context;
         setBaseUrl(baseUrl);
-        initCache(context.getCacheDir() + "/http", 10 * 1024 * 1024);
     }
 
     /**
@@ -102,7 +102,6 @@ public class HttpManager {
      */
     public RetrofitClient.Builder getRetrofitBuilder(String baseUrl) {
         RetrofitClient.Builder builder = new RetrofitClient.Builder()
-//                .addCacheInterceptor(CacheInterceptor.create(mContext))
 //                .addGsonConverterInterceptor(GsonConverterFactory.create())
                 .addRxJavaCallAdapterInterceptor(RxJavaCallAdapterFactory.create())
 //                .addRequestJsonInterceptor(RequestJsonInterceptor.create())
@@ -111,9 +110,15 @@ public class HttpManager {
 
         handleHeaders(builder);
 
-        if (!TextUtils.isEmpty(baseUrl)) {
-            builder.baseUrl(baseUrl);
+        if (!TextUtils.isEmpty(tmpBaseUrl)) {
+            builder.baseUrl(tmpBaseUrl);
+            tmpBaseUrl = "";
+        } else {
+            if (!TextUtils.isEmpty(baseUrl)) {
+                builder.baseUrl(baseUrl);
+            }
         }
+
         return builder;
     }
 
@@ -131,12 +136,12 @@ public class HttpManager {
             //这个headers是每次请求动态更新的，所以用完需要清掉
             this.tmpHeaders.clear();
         }
-        if (headerMap.get("Content-Type") == null) {
-            headerMap.put("Content-Type", "application/json; charset=utf-8");
-        }
-        if (headerMap.get("Accept") == null) {
-            headerMap.put("Accept", "application/json");
-        }
+//        if (headerMap.get("Content-Type") == null) {
+//            headerMap.put("Content-Type", "application/json; charset=utf-8");
+//        }
+//        if (headerMap.get("Accept") == null) {
+//            headerMap.put("Accept", "application/json");
+//        }
         builder.addHeader(headerMap);
     }
 
@@ -145,8 +150,13 @@ public class HttpManager {
      *
      * @return
      */
-    public HttpManager addHeaders(Map<String, String> headers) {
+    public HttpManager addTmpHeaders(Map<String, String> headers) {
         this.tmpHeaders = headers;
+        return this;
+    }
+
+    public HttpManager setTmpBaseUrl(String tmpBaseUrl) {
+        this.tmpBaseUrl = tmpBaseUrl;
         return this;
     }
 
@@ -192,12 +202,12 @@ public class HttpManager {
     /**
      * 发送Get请求
      *
-     * @param url        请求相对地址，地址共同部分前缀在{@link #getRetrofitBuilder(String)}中设置
+     * @param fullUrl    请求绝对地址，地址共同部分前缀在{@link #getRetrofitBuilder(String)}中设置
      * @param parameters 请求参数
      * @param callback   网络回调
      */
-    public void getFullPath(String url, Map<String, Object> parameters, HttpCallback callback) {
-        getRetrofitBuilder("").build().getFullPath(mContext, url, parameters, callback);
+    public void getFullPath(String fullUrl, Map<String, Object> parameters, HttpCallback callback) {
+        getRetrofitBuilder("").build().getFullPath(mContext, fullUrl, parameters, callback);
     }
 
     /**
@@ -231,6 +241,16 @@ public class HttpManager {
      */
     public void put(String url, Map<String, Object> parameters, HttpCallback callback) {
         getRetrofitBuilder(baseUrl).build().put(mContext, url, parameters, callback);
+    }
+
+    /**
+     * 发送DELETE请求
+     *
+     * @param url      请求相对地址，地址共同部分前缀在{@link #getRetrofitBuilder(String)}中设置
+     * @param callback 网络回调
+     */
+    public void delete(String url, Map<String, Object> parameters, HttpCallback callback) {
+        getRetrofitBuilder(baseUrl).build().delete(mContext, url, parameters, callback);
     }
 
     /**
@@ -284,12 +304,12 @@ public class HttpManager {
     /**
      * 发送Post请求
      *
-     * @param url        请求相对地址，地址共同部分前缀在{@link #getRetrofitBuilder(String)}中设置
+     * @param fullUrl    请求绝对地址，地址共同部分前缀在{@link #getRetrofitBuilder(String)}中设置
      * @param parameters 请求参数
      * @param callback   网络回调
      */
-    public void postFullPath(String url, Map<String, Object> parameters, HttpCallback callback) {
-        getRetrofitBuilder("").build().postFullPath(mContext, url, parameters, callback);
+    public void postFullPath(String fullUrl, Map<String, Object> parameters, HttpCallback callback) {
+        getRetrofitBuilder("").build().postFullPath(mContext, fullUrl, parameters, callback);
     }
 
 //    /**
@@ -305,7 +325,98 @@ public class HttpManager {
 //                .compose(retrofitManager.getSchedulerTransformer());
 //    }
 
-    public void uploadFile(FileUploadEnetity uploadEnetity, final TransformProgressListener iProgress) {
+    /**
+     * 上传文件
+     *
+     * @param url       文件上传相对地址
+     * @param filePath  本地文件路径
+     * @param fileDes   文件描述
+     * @param iProgress 回调
+     */
+    public void uploadFile(String url, String filePath, String fileDes, TransformProgressListener iProgress) {
+        uploadFile(url, filePath, fileDes, false, iProgress);
+    }
+
+    /**
+     * 上传文件
+     *
+     * @param fullUrl   文件上传绝对地址
+     * @param filePath  本地文件路径
+     * @param fileDes   文件描述
+     * @param iProgress 回调
+     */
+    public void uploadFileFullPath(String fullUrl, String filePath, String fileDes, TransformProgressListener iProgress) {
+        uploadFile(fullUrl, filePath, fileDes, true, iProgress);
+    }
+
+    private void uploadFile(String url, String filePath, String fileDes, boolean useFullUrl, final TransformProgressListener iProgress) {
+        final Handler handler = new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if (msg.what == 1000) {
+                    iProgress.onProgress(msg.arg1, msg.arg2, msg.arg1 >= msg.arg2);
+                } else {
+                    if (msg.obj != null && (msg.obj instanceof String)) {
+                        iProgress.onFailed((String) msg.obj);
+                    }
+                }
+            }
+        };
+
+        FileResponseResult fileResponseResult = new FileResponseResult() {
+            @Override
+            public void onExecuting(long progress, long total, boolean done) {
+                Message message = new Message();
+                message.what = 1000;
+                message.arg1 = (int) progress;
+                message.arg2 = (int) total;
+                handler.sendMessageDelayed(message, HANDER_DELAYED_TIME);
+            }
+
+            @Override
+            public void onFailure(Throwable throwable, String content) {
+                Message message = new Message();
+                message.what = 1001;
+                message.obj = content;
+                handler.sendMessageDelayed(message, HANDER_DELAYED_TIME);
+            }
+
+            @Override
+            public void onSuccess(Object o) {
+                iProgress.onProgress(100, 100, true);
+            }
+        };
+
+        getRetrofitBuilder(baseUrl)
+                .addUploadFileInterceptor(UploadFileInterceptor.create())
+                .build()
+                .uploadFile(url, filePath, fileDes, useFullUrl, fileResponseResult);
+    }
+
+    /**
+     * 上传文件
+     *
+     * @param url          文件上传相对地址
+     * @param filePathList 本地文件路径
+     * @param iProgress    回调
+     */
+    public void uploadFiles(String url, List<String> filePathList, TransformProgressListener iProgress) {
+        uploadFiles(url, filePathList, false, iProgress);
+    }
+
+    /**
+     * 上传文件
+     *
+     * @param fullUrl      文件上传绝对地址
+     * @param filePathList 本地文件路径
+     * @param iProgress    回调
+     */
+    public void uploadFilesFullPath(String fullUrl, List<String> filePathList, TransformProgressListener iProgress) {
+        uploadFiles(fullUrl, filePathList, true, iProgress);
+    }
+
+    private void uploadFiles(String url, List<String> filePathList, boolean useFullUrl, final TransformProgressListener iProgress) {
         final Handler handler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {
@@ -322,12 +433,22 @@ public class HttpManager {
                 message.arg2 = (int) total;
                 handler.sendMessageDelayed(message, HANDER_DELAYED_TIME);
             }
+
+            @Override
+            public void onSuccess(Object o) {
+                iProgress.onProgress(100, 100, true);
+            }
+
+            @Override
+            public void onFailure(Throwable throwable, String content) {
+                iProgress.onFailed(content);
+            }
         };
 
         getRetrofitBuilder(baseUrl)
                 .addUploadFileInterceptor(UploadFileInterceptor.create())
                 .build()
-                .upLoadFiles(uploadEnetity, fileResponseResult);
+                .uploadFiles(url, filePathList, useFullUrl, fileResponseResult);
     }
 
     public void download(String url, String savePath, DownloadFileListener listener) {
