@@ -3,6 +3,7 @@ package com.jady.sample.ui.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import com.jady.sample.R;
 import com.jady.sample.ui.adapter.DownloadFileAdapter;
 import com.jady.sample.utils.FileUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,10 +59,11 @@ public class FileDownloadFragment extends Fragment {
         List<DownloadInfo> downloadInfoList = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             DownloadInfo downloadInfo = new DownloadInfo("https://pro-app-qn.fir.im/03a7c474e9846cac29d93cf9417eda9dbb2c1eee.apk?attname=%E5%8A%A0%E7%8F%AD%E7%AE%A1%E5%AE%B6_v3.0.0_qntest_com.qeeniao.mobile.recordincomej_0703_1635.apk_3.0.0.apk&e=1499075336&token=LOvmia8oXF4xnLh0IdH05XMYpH6ENHNpARlmPc-T:yJbpba26XIcfxNNn08YKTVbk6nY=",
-                    FileUtils.getInternalDir(getActivity(), FileUtils.HTTP_PATH, true));
+                    FileUtils.getInternalDir(getActivity(), FileUtils.HTTP_PATH, true) + File.pathSeparator + "加班管家" + i + ".apk");
             downloadInfoList.add(downloadInfo);
         }
         adapter.setDownloadInfoList(downloadInfoList);
+        rvFraDownload.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvFraDownload.setAdapter(adapter);
     }
 }

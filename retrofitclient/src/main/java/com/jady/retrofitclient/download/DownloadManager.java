@@ -89,6 +89,24 @@ public class DownloadManager {
         }
     }
 
+    public void restartDownloadAll() {
+        for (DownloadInfo downloadInfo : downloadInfos) {
+            restartDownload(downloadInfo);
+        }
+    }
+
+    public void restartDownload(DownloadInfo downloadInfo) {
+        if (downloadInfo == null) return;
+        if (downloadInfo.getState() == DownloadInfo.DOWNLOAD) return;
+        if (downloadInfo.getState() == DownloadInfo.START) return;
+        downloadInfo.setReadLength(0);
+        downloadInfo.setContentLength(0);
+        File file = new File(downloadInfo.getSavePath());
+        if (file.exists()) file.delete();
+        downloadInfo.setState(DownloadInfo.DOWNLOAD);
+        startDown(downloadInfo);
+    }
+
     public void stopDown(DownloadInfo info) {
         if (info == null) return;
         info.setState(DownloadInfo.STOP);

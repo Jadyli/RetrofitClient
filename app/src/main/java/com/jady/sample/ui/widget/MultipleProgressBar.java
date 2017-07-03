@@ -78,7 +78,6 @@ public class MultipleProgressBar extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        float progressLength = (float) mProgress / mMaxProgress * getWidth();
         switch (type) {
             case ProgressBarType.ROUND:
                 drawRoundRectProgress(canvas);
@@ -194,6 +193,7 @@ public class MultipleProgressBar extends View {
     }
 
     public void setProgress(int progress) {
+        progress *= 100;
         if (progress > mMaxProgress) {
             progress = mMaxProgress;
         }
