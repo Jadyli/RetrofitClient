@@ -6,10 +6,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
-import com.jady.sample.fragment.BaseRequestFragment;
-import com.jady.sample.fragment.FileDownloadFragment;
-import com.jady.sample.fragment.FileUploadFragment;
-import com.jady.sample.view.MainVpAdapter;
+import com.jady.sample.ui.fragment.BaseRequestFragment;
+import com.jady.sample.ui.fragment.FileDownloadFragment;
+import com.jady.sample.ui.fragment.FileUploadFragment;
+import com.jady.sample.ui.adapter.MainVpAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
 //        API.getImageList(ImgClassify.ID1, 20, 1, new ServerCallback<ServerCallbackModel<List<ImageInfo>>, List<ImageInfo>>() {
 //            @Override
 //            public void onSuccess(List<ImageInfo> imageInfos) {
-//                mainRvAdapter.setImageInfoList(imageInfos);
+//                mainRvAdapter.setDownloadInfoList(imageInfos);
 //            }
 //
 //            @Override

@@ -52,7 +52,7 @@ public class FileUtils {
      * @param path
      * @return
      */
-    private static String getInternalDir(Context context, String path, boolean isCache) {
+    public static String getInternalDir(Context context, String path, boolean isCache) {
         File dir;
         if (isCache) {
             dir = new File(context.getCacheDir(), path);
@@ -72,7 +72,7 @@ public class FileUtils {
      * @param path
      * @return
      */
-    private static String getExternalDir(Context context, String path) {
+    public static String getExternalDir(Context context, String path) {
         String state = Environment.getExternalStorageState();
         if (Environment.MEDIA_MOUNTED.equalsIgnoreCase(state)) {
             File root = Environment.getExternalStorageDirectory();

@@ -1,4 +1,4 @@
-package com.jady.sample.view;
+package com.jady.sample.ui.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -16,8 +16,6 @@ import com.jady.sample.R;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-
-import static android.R.attr.path;
 
 /**
  * Created by lipingfa on 2017/6/27.

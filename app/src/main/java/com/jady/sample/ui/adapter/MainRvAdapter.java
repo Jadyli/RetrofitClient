@@ -1,4 +1,4 @@
-package com.jady.sample.view;
+package com.jady.sample.ui.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.jady.sample.R;
 import com.jady.sample.bean.ImageInfo;
+import com.jady.sample.ui.widget.FrescoImageView;
 
 import java.util.ArrayList;
 import java.util.List;

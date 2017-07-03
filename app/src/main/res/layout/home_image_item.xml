@@ -6,7 +6,7 @@
     android:background="#ffffff"
     android:orientation="vertical">
 
-    <com.jady.sample.view.FrescoImageView
+    <com.jady.sample.ui.widget.FrescoImageView
         android:id="@+id/iv_home_item"
         android:layout_width="150dp"
         android:layout_height="300dp"

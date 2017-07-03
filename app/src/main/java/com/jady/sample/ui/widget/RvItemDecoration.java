@@ -1,4 +1,4 @@
-package com.jady.sample.view;
+package com.jady.sample.ui.widget;
 
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;

@@ -1,4 +1,4 @@
-package com.jady.sample.view;
+package com.jady.sample.ui.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

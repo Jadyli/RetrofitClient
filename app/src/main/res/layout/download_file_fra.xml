@@ -3,5 +3,70 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-    
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="15dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_fra_download_start_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:text="全部开始"
+            android:textAllCaps="false"
+            android:textColor="#ffffffff"
+            android:textSize="18dp" />
+
+        <Button
+            android:id="@+id/btn_fra_download_stop_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:text="全部暂停"
+            android:textAllCaps="false"
+            android:textColor="#ffffffff"
+            android:textSize="18dp" />
+
+        <Button
+            android:id="@+id/btn_fra_download_continue_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:text="继续下载"
+            android:textAllCaps="false"
+            android:textColor="#ffffffff"
+            android:textSize="18dp" />
+
+        <Button
+            android:id="@+id/btn_fra_download_cancel_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:text="全部取消"
+            android:textAllCaps="false"
+            android:textColor="#ffffffff"
+            android:textSize="18dp" />
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_fra_download"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </LinearLayout>

@@ -1,4 +1,4 @@
-package com.jady.sample.view;
+package com.jady.sample.ui.widget;
 
 import android.content.Context;
 import android.net.Uri;

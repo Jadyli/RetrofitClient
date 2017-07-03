@@ -35,7 +35,7 @@ public class API {
         if (page > 0) {
             parameters.put("page", page);
         }
-        HttpManager.getInstance().get(UrlConfig.IMG_LIST, parameters, callback);
+        HttpManager.get(UrlConfig.IMG_LIST, parameters, callback);
     }
 
     /**
@@ -61,38 +61,40 @@ public class API {
     public static void testGet(HttpCallback callback) {
         HashMap<String, String> headers = new HashMap<>();
         headers.put("aaa", "adafd");
-        HttpManager.getInstance().addTmpHeaders(headers).get(UrlConfig.USER_INFO, null, callback);
+        HttpManager.setTmpBaseUrl("http://192.168.0.127:8080/retrofitclientserver/");
+        HttpManager.addTmpHeaders(headers);
+        HttpManager.get(UrlConfig.USER_INFO, null, callback);
     }
 
     public static void testPost(String name, String password, HttpCallback callback) {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("name", name);
         parameters.put("password", password);
-        HttpManager.getInstance().post(UrlConfig.USER_LOGIN, parameters, callback);
+        HttpManager.post(UrlConfig.USER_LOGIN, parameters, callback);
     }
 
     public static void testPost(UserForLogin userForLogin, HttpCallback callback) {
-        HttpManager.getInstance().postByBody(UrlConfig.USER_LOGIN_BY_BODY, userForLogin, callback);
+        HttpManager.postByBody(UrlConfig.USER_LOGIN_BY_BODY, userForLogin, callback);
     }
 
     public static void testPut(String putContent, HttpCallback callback) {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("name", putContent);
 //        parameters.put("age", 18);
-        HttpManager.getInstance().put(UrlConfig.USER_UPDATE, parameters, callback);
+        HttpManager.put(UrlConfig.USER_UPDATE, parameters, callback);
     }
 
     public static void testDelete(int feedId, HttpCallback callback) {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("feed_id", feedId);
-        HttpManager.getInstance().deleteByBody(UrlConfig.FEED_DELETE, parameters, callback);
+        HttpManager.deleteByBody(UrlConfig.FEED_DELETE, parameters, callback);
     }
 
     public static void testSingleFileUpload(String url, String filePath, String fileDes, TransformProgressListener iProgress) {
-        HttpManager.getInstance().uploadFile(url, filePath, fileDes, iProgress);
+        HttpManager.uploadFile(url, filePath, fileDes, iProgress);
     }
 
     public static void testMultipleFileUpload(String url, List<String> filePathList, TransformProgressListener iProgress) {
-        HttpManager.getInstance().uploadFiles(url, filePathList, iProgress);
+        HttpManager.uploadFiles(url, filePathList, iProgress);
     }
 }

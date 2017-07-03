@@ -33,9 +33,9 @@ public class HttpManager {
     /**
      * 这个headers是每次请求动态更新的，用完需要清掉
      */
-    private Map<String, String> tmpHeaders;
+    private static Map<String, String> tmpHeaders;
     private static String baseUrl = "";
-    private String tmpBaseUrl = "";
+    private static String tmpBaseUrl = "";
     private static OnGetHeadersListener onGetHeadersListener;
     private static String cacheDirPath;
     private static long maxCacheSize;
@@ -100,7 +100,7 @@ public class HttpManager {
      * @param baseUrl
      * @return
      */
-    public RetrofitClient.Builder getRetrofitBuilder(String baseUrl) {
+    public static RetrofitClient.Builder getRetrofitBuilder(String baseUrl) {
         RetrofitClient.Builder builder = new RetrofitClient.Builder()
 //                .addGsonConverterInterceptor(GsonConverterFactory.create())
                 .addRxJavaCallAdapterInterceptor(RxJavaCallAdapterFactory.create())
@@ -122,7 +122,7 @@ public class HttpManager {
         return builder;
     }
 
-    private void handleHeaders(RetrofitClient.Builder builder) {
+    private static void handleHeaders(RetrofitClient.Builder builder) {
         Map<String, String> headerMap = new HashMap<>();
         if (onGetHeadersListener != null) {
             Map<String, String> listenerHeaders = onGetHeadersListener.getHeaders();
@@ -131,10 +131,10 @@ public class HttpManager {
             }
         }
         //动态添加的headers的优先级要高于固定的onGetHeadersListener中的
-        if (this.tmpHeaders != null && this.tmpHeaders.size() > 0) {
-            headerMap.putAll(this.tmpHeaders);
+        if (tmpHeaders != null && tmpHeaders.size() > 0) {
+            headerMap.putAll(tmpHeaders);
             //这个headers是每次请求动态更新的，所以用完需要清掉
-            this.tmpHeaders.clear();
+            tmpHeaders.clear();
         }
 //        if (headerMap.get("Content-Type") == null) {
 //            headerMap.put("Content-Type", "application/json; charset=utf-8");
@@ -146,21 +146,19 @@ public class HttpManager {
     }
 
     /**
-     * 初始化头部信息，添加一些共同的参数
+     * 初始化头部信息，添加一些共同的请求头参数
      *
      * @return
      */
-    public HttpManager addTmpHeaders(Map<String, String> headers) {
-        this.tmpHeaders = headers;
-        return this;
+    public static void addTmpHeaders(Map<String, String> headers) {
+        tmpHeaders = headers;
     }
 
-    public HttpManager setTmpBaseUrl(String tmpBaseUrl) {
-        this.tmpBaseUrl = tmpBaseUrl;
-        return this;
+    public static void setTmpBaseUrl(String tmpBaseUrl) {
+        HttpManager.tmpBaseUrl = tmpBaseUrl;
     }
 
-    public Map<String, String> getTmpHeaders() {
+    public static Map<String, String> getTmpHeaders() {
         return tmpHeaders;
     }
 
@@ -184,7 +182,7 @@ public class HttpManager {
      * @param parameters 请求参数
      * @param callback   网络回调
      */
-    public void get(String url, Map<String, Object> parameters, HttpCallback callback) {
+    public static void get(String url, Map<String, Object> parameters, HttpCallback callback) {
         getRetrofitBuilder(baseUrl).build().get(mContext, url, parameters, callback);
     }
 
@@ -217,7 +215,7 @@ public class HttpManager {
      * @param parameters 请求参数
      * @param callback   网络回调
      */
-    public void post(String url, Map<String, Object> parameters, HttpCallback callback) {
+    public static void post(String url, Map<String, Object> parameters, HttpCallback callback) {
         getRetrofitBuilder(baseUrl).build().post(mContext, url, parameters, callback);
     }
 
@@ -239,7 +237,7 @@ public class HttpManager {
      * @param parameters 请求参数
      * @param callback   网络回调
      */
-    public void put(String url, Map<String, Object> parameters, HttpCallback callback) {
+    public static void put(String url, Map<String, Object> parameters, HttpCallback callback) {
         getRetrofitBuilder(baseUrl).build().put(mContext, url, parameters, callback);
     }
 
@@ -270,7 +268,7 @@ public class HttpManager {
      * @param body     请求参数
      * @param callback 网络回调
      */
-    public <T> void deleteByBody(String url, T body, HttpCallback callback) {
+    public static <T> void deleteByBody(String url, T body, HttpCallback callback) {
         getRetrofitBuilder(baseUrl).build().deleteByBody(mContext, url, body, callback);
     }
 
@@ -293,7 +291,7 @@ public class HttpManager {
      * @param callback
      * @param <T>
      */
-    public <T> void postByBody(String url, T body, HttpCallback callback) {
+    public static <T> void postByBody(String url, T body, HttpCallback callback) {
         getRetrofitBuilder(baseUrl).build().postByBody(mContext, url, body, callback);
     }
 
@@ -333,7 +331,7 @@ public class HttpManager {
      * @param fileDes   文件描述
      * @param iProgress 回调
      */
-    public void uploadFile(String url, String filePath, String fileDes, TransformProgressListener iProgress) {
+    public static void uploadFile(String url, String filePath, String fileDes, TransformProgressListener iProgress) {
         uploadFile(url, filePath, fileDes, false, iProgress);
     }
 
@@ -349,7 +347,7 @@ public class HttpManager {
         uploadFile(fullUrl, filePath, fileDes, true, iProgress);
     }
 
-    private void uploadFile(String url, String filePath, String fileDes, boolean useFullUrl, final TransformProgressListener iProgress) {
+    private static void uploadFile(String url, String filePath, String fileDes, boolean useFullUrl, final TransformProgressListener iProgress) {
         final Handler handler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {
@@ -401,7 +399,7 @@ public class HttpManager {
      * @param filePathList 本地文件路径
      * @param iProgress    回调
      */
-    public void uploadFiles(String url, List<String> filePathList, TransformProgressListener iProgress) {
+    public static void uploadFiles(String url, List<String> filePathList, TransformProgressListener iProgress) {
         uploadFiles(url, filePathList, false, iProgress);
     }
 
@@ -416,7 +414,7 @@ public class HttpManager {
         uploadFiles(fullUrl, filePathList, true, iProgress);
     }
 
-    private void uploadFiles(String url, List<String> filePathList, boolean useFullUrl, final TransformProgressListener iProgress) {
+    private static void uploadFiles(String url, List<String> filePathList, boolean useFullUrl, final TransformProgressListener iProgress) {
         final Handler handler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {

@@ -1,4 +1,4 @@
-package com.jady.sample.fragment;
+package com.jady.sample.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
