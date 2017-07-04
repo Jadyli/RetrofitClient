@@ -1,5 +1,6 @@
 package com.jady.retrofitclient.download;
 
+import com.jady.retrofitclient.HttpManager;
 import com.jady.retrofitclient.request.CommonRequest;
 import com.jady.retrofitclient.subscriber.DownloadSubscriber;
 
@@ -10,6 +11,8 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -42,30 +45,46 @@ public class DownloadManager {
         subscriberMap = new HashMap<>();
     }
 
-    public void startDown(final DownloadInfo info) {
+    public void addAll(List<DownloadInfo> downloadInfoList) {
+        for (DownloadInfo downloadInfo : downloadInfoList) {
+            if (!this.downloadInfos.contains(downloadInfo)) {
+                addDownloadInfo(downloadInfo);
+            }
+        }
+    }
+
+    public void addDownloadInfo(DownloadInfo info) {
         if (info == null || subscriberMap.get(info.getUrl()) != null) {
             subscriberMap.get(info.getUrl()).setDownloadInfo(info);
             return;
         }
+        info.setState(DownloadInfo.DOWNLOAD);
         DownloadSubscriber subscriber = new DownloadSubscriber(info);
         subscriberMap.put(info.getUrl(), subscriber);
         CommonRequest commonRequest;
-        if (downloadInfos.contains(info)) {
-            commonRequest = info.getRequest();
-        } else {
+        if (!downloadInfos.contains(info)) {
             DownloadInterceptor interceptor = DownloadInterceptor.create(info, subscriber);
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
             builder.connectTimeout(15, TimeUnit.SECONDS);
             builder.addInterceptor(interceptor);
             Retrofit.Builder retrofitBuilder = new Retrofit.Builder()
                     .client(builder.build())
+                    .baseUrl(HttpManager.getBaseUrl())
                     .addConverterFactory(GsonConverterFactory.create())
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
             commonRequest = retrofitBuilder.build().create(CommonRequest.class);
             info.setRequest(commonRequest);
             downloadInfos.add(info);
         }
-        commonRequest.download(info.getUrl())
+    }
+
+    public void startDown(final DownloadInfo info) {
+        addDownloadInfo(info);
+        DownloadSubscriber downloadSubscriber = subscriberMap.get(info.getUrl());
+        if (info.getRequest() == null || downloadSubscriber == null) {
+            return;
+        }
+        info.getRequest().download(info.getUrl())
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .map(new Func1<ResponseBody, DownloadInfo>() {
@@ -80,7 +99,7 @@ public class DownloadManager {
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(subscriber);
+                .subscribe(downloadSubscriber);
     }
 
     public void startAll() {
@@ -89,7 +108,7 @@ public class DownloadManager {
         }
     }
 
-    public void restartDownloadAll() {
+    public void restartAll() {
         for (DownloadInfo downloadInfo : downloadInfos) {
             restartDownload(downloadInfo);
         }
@@ -98,7 +117,6 @@ public class DownloadManager {
     public void restartDownload(DownloadInfo downloadInfo) {
         if (downloadInfo == null) return;
         if (downloadInfo.getState() == DownloadInfo.DOWNLOAD) return;
-        if (downloadInfo.getState() == DownloadInfo.START) return;
         downloadInfo.setReadLength(0);
         downloadInfo.setContentLength(0);
         File file = new File(downloadInfo.getSavePath());
@@ -110,9 +128,11 @@ public class DownloadManager {
     public void stopDown(DownloadInfo info) {
         if (info == null) return;
         info.setState(DownloadInfo.STOP);
+        info.setReadLength(0);
+        info.setContentLength(0);
         info.getListener().onStop();
-        if (subscriberMap.containsKey(info.getUrl())) {
-            DownloadSubscriber subscriber = subscriberMap.get(info.getUrl());
+        DownloadSubscriber subscriber = subscriberMap.get(info.getUrl());
+        if (subscriber != null) {
             subscriber.unsubscribe();
             subscriberMap.remove(info.getUrl());
         }
@@ -122,8 +142,8 @@ public class DownloadManager {
         if (info == null) return;
         info.setState(DownloadInfo.PAUSE);
         info.getListener().onPause();
-        if (subscriberMap.containsKey(info.getUrl())) {
-            DownloadSubscriber subscriber = subscriberMap.get(info.getUrl());
+        DownloadSubscriber subscriber = subscriberMap.get(info.getUrl());
+        if (subscriber != null) {
             subscriber.unsubscribe();
             subscriberMap.remove(info.getUrl());
         }
@@ -149,8 +169,37 @@ public class DownloadManager {
         return downloadInfos;
     }
 
+    public void removeAll() {
+        Iterator<DownloadInfo> iterator = downloadInfos.iterator();
+        while (iterator.hasNext()) {
+            DownloadInfo info = iterator.next();
+            info.setState(DownloadInfo.START);
+            info.setReadLength(0);
+            info.setContentLength(0);
+            DownloadSubscriber subscriber = subscriberMap.get(info.getUrl());
+            if (subscriber != null) {
+                subscriber.unsubscribe();
+                subscriberMap.remove(info.getUrl());
+            }
+            File file = new File(info.getSavePath());
+            if (file.exists()) file.delete();
+        }
+        subscriberMap.clear();
+        downloadInfos.clear();
+    }
+
     public void remove(DownloadInfo info) {
-        subscriberMap.remove(info.getUrl());
+        if (info == null) return;
+        info.setState(DownloadInfo.START);
+        info.setReadLength(0);
+        info.setContentLength(0);
+        File file = new File(info.getSavePath());
+        if (file.exists()) file.delete();
+        DownloadSubscriber subscriber = subscriberMap.get(info.getUrl());
+        if (subscriber != null) {
+            subscriber.unsubscribe();
+            subscriberMap.remove(info.getUrl());
+        }
         downloadInfos.remove(info);
     }
 

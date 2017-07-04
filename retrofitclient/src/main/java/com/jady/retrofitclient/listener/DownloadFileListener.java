@@ -18,7 +18,7 @@ public abstract class DownloadFileListener<T> {
      */
     public abstract void onComplete();
 
-    public abstract void updateProgress(long contentRead, long contentLength, boolean completed);
+    public abstract void updateProgress(float contentRead, long contentLength, boolean completed);
 
     public abstract void onError(Throwable e);
 

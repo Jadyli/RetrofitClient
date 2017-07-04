@@ -11,5 +11,7 @@
         <attr name="stroke_width" format="dimension" />
         <attr name="progress_color" format="color" />
         <attr name="bg_color" format="color" />
+        <attr name="rect_top" format="dimension" />
+        <attr name="text_size" format="dimension" />
     </declare-styleable>
 </resources>

@@ -25,13 +25,10 @@ public class MultipleProgressBar extends View {
     private float strokeWidth;
     @ProgressBarType
     private int type;
-    private int progressColor;
-    private int bgColor;
-    private int strokeColor;
-    private float radius;
+    private int progressColor, bgColor, strokeColor;
+    private float mRadius, mRectTop, mTextSize;
     private Paint mProgressPaint, mBgPaint, mStrokePaint;
-    private int mProgress = 0;
-    private int mMaxProgress = 100;
+    private float mProgress = 0, mMaxProgress = 100;
 
     @IntDef({ProgressBarType.ROUND, ProgressBarType.CIRCLE, ProgressBarType.RECT})
     @Retention(RetentionPolicy.SOURCE)
@@ -58,26 +55,30 @@ public class MultipleProgressBar extends View {
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.MultipleProgressBar);
         type = array.getColor(R.styleable.MultipleProgressBar_type, ProgressBarType.RECT);
         progressColor = array.getColor(R.styleable.MultipleProgressBar_progress_color, Color.GREEN);
-        bgColor = array.getColor(R.styleable.MultipleProgressBar_bg_color, Color.RED);
-        strokeColor = array.getColor(R.styleable.MultipleProgressBar_stroke_color, Color.RED);
-        radius = array.getDimension(R.styleable.MultipleProgressBar_radius, 10);
+        bgColor = array.getColor(R.styleable.MultipleProgressBar_bg_color, Color.GRAY);
+        strokeColor = array.getColor(R.styleable.MultipleProgressBar_stroke_color, Color.GRAY);
+        mRadius = array.getDimension(R.styleable.MultipleProgressBar_radius, 10);
         strokeWidth = array.getDimension(R.styleable.MultipleProgressBar_stroke_width, 0);
+        mRectTop = array.getDimension(R.styleable.MultipleProgressBar_rect_top, 0);
+        mTextSize = array.getDimension(R.styleable.MultipleProgressBar_text_size, 24);
         array.recycle();
 
         mProgressPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG | Paint.LINEAR_TEXT_FLAG);
         mProgressPaint.setColor(progressColor);
         mProgressPaint.setStyle(Paint.Style.FILL);
+        mProgressPaint.setTextSize(mTextSize);
         mBgPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG | Paint.LINEAR_TEXT_FLAG);
         mBgPaint.setColor(bgColor);
         mBgPaint.setStyle(Paint.Style.FILL);
         mStrokePaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG | Paint.LINEAR_TEXT_FLAG);
-        mBgPaint.setColor(strokeColor);
-        mBgPaint.setStyle(Paint.Style.STROKE);
+        mStrokePaint.setColor(strokeColor);
+        mStrokePaint.setStyle(Paint.Style.STROKE);
 
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
+
         switch (type) {
             case ProgressBarType.ROUND:
                 drawRoundRectProgress(canvas);
@@ -93,41 +94,42 @@ public class MultipleProgressBar extends View {
 
     private void drawRoundRectProgress(Canvas canvas) {
         float progressLength = (float) mProgress / mMaxProgress * getWidth();
-        RectF rectF = new RectF(getLeft(), getTop(), getRight(), getBottom());
-        canvas.drawRoundRect(rectF, radius, radius, mBgPaint);
+        RectF rectF = new RectF(0, mRectTop, getRight(), getBottom());
+        canvas.drawRoundRect(rectF, mRadius, mRadius, mBgPaint);
         if (strokeWidth > 0) {
-            canvas.drawRoundRect(rectF, radius, radius, mStrokePaint);
+            canvas.drawRoundRect(rectF, mRadius, mRadius, mStrokePaint);
         }
+        canvas.drawText((int) mProgress + "%", progressLength, mRectTop - mProgressPaint.descent(), mProgressPaint);
         //画圆角矩形
-//        canvas.drawRoundRect(rect, radius, radius, mProgressPaint);
+//        canvas.drawRoundRect(rect, mRadius, mRadius, mProgressPaint);
         Path path = new Path();
-        path.moveTo(0, getTop() + radius);
-        RectF rectLeftB = new RectF(getLeft(), getBottom() - radius * 2, radius * 2, getBottom());
-        RectF rectLeftT = new RectF(getLeft(), getTop(), radius * 2, getTop() + radius * 2);
-        RectF rectRightT = new RectF(getWidth() - 2 * radius, getTop(), getWidth(), getTop() + radius * 2);
-        RectF rectRightB = new RectF(getWidth() - 2 * radius, getBottom() - radius * 2, getWidth(), getBottom());
+        path.moveTo(0, 0 + mRadius);
+        RectF rectLeftB = new RectF(0, getBottom() - mRadius * 2, mRadius * 2, getBottom());
+        RectF rectLeftT = new RectF(0, mRectTop, mRadius * 2, 0 + mRadius * 2);
+        RectF rectRightT = new RectF(getWidth() - 2 * mRadius, mRectTop, getWidth(), 0 + mRadius * 2);
+        RectF rectRightB = new RectF(getWidth() - 2 * mRadius, getBottom() - mRadius * 2, getWidth(), getBottom());
         float startAngle, sweepAngle;
-        if (progressLength <= radius) {
+        if (progressLength <= mRadius) {
             //进度小于圆角半径
 
             //左上角弧度
             startAngle = 180;
-            sweepAngle = 90 * (progressLength / radius);
+            sweepAngle = 90 * (progressLength / mRadius);
             path.arcTo(rectLeftT, startAngle, sweepAngle);
-            path.lineTo(progressLength, getBottom() - (radius - progressLength));
+            path.lineTo(progressLength, getBottom() - (mRadius - progressLength));
 
             //左下角弧度
-            //90 + 90 * (1 - progressLength / radius)
-            startAngle = 90 * (2 - progressLength / radius);
+            //90 + 90 * (1 - progressLength / mRadius)
+            startAngle = 90 * (2 - progressLength / mRadius);
             sweepAngle = 180 - startAngle;
             path.arcTo(rectLeftB, startAngle, sweepAngle);
-        } else if (progressLength > radius && progressLength < getWidth() - radius) {
+        } else if (progressLength > mRadius && progressLength < getWidth() - mRadius) {
             //左上角圆角
             path.arcTo(rectLeftT, 180, 90);
 
-            path.lineTo(progressLength, getTop());
+            path.lineTo(progressLength, mRectTop);
             path.lineTo(progressLength, getBottom());
-            path.lineTo(radius, getBottom());
+            path.lineTo(mRadius, getBottom());
 
             //左下角圆角
             path.arcTo(rectLeftB, 90, 90);
@@ -135,19 +137,19 @@ public class MultipleProgressBar extends View {
             //进度大于宽度-圆角半径
             //左上角圆角
             path.arcTo(rectLeftT, 180, 90);
-            path.lineTo(getWidth() - radius, getTop());
+            path.lineTo(getWidth() - mRadius, mRectTop);
             //右上角圆弧
             startAngle = 270;
-            sweepAngle = 90 * (1 - (getWidth() - progressLength) / radius);
+            sweepAngle = 90 * (1 - (getWidth() - progressLength) / mRadius);
             path.arcTo(rectRightT, startAngle, sweepAngle);
             path.lineTo(progressLength, getBottom() - (getRight() - progressLength));
 
             //右下角圆弧
-            startAngle = (getWidth() - progressLength) / radius * 90;
+            startAngle = (getWidth() - progressLength) / mRadius * 90;
             sweepAngle = 90 - startAngle;
             path.arcTo(rectRightB, startAngle, sweepAngle);
 
-            path.lineTo(radius, getBottom());
+            path.lineTo(mRadius, getBottom());
 
             //左下角圆角
             path.arcTo(rectLeftB, 90, 90);
@@ -160,31 +162,32 @@ public class MultipleProgressBar extends View {
 
         int centerX = getWidth() / 2;
         int centerY = getHeight() / 2;
-        canvas.drawCircle(centerX, centerY, radius, mBgPaint);
+        canvas.drawCircle(centerX, centerY, mRadius, mBgPaint);
         if (strokeWidth > 0) {
-            canvas.drawCircle(getWidth() / 2, getHeight() / 2, radius, mStrokePaint);
+            canvas.drawCircle(getWidth() / 2, getHeight() / 2, mRadius, mStrokePaint);
         }
         Path path = new Path();
         path.moveTo(centerX, centerY);
-        path.lineTo(centerX, getTop());
-        RectF rectF = new RectF(getLeft(), getTop(), getRight(), getBottom());
+        path.lineTo(centerX, 0);
+        RectF rectF = new RectF(0, 0, getRight(), getBottom());
         path.arcTo(rectF, 270, mProgress / mMaxProgress * 360);
         path.close();
         canvas.drawPath(path, mProgressPaint);
     }
 
     private void drawRectProgress(Canvas canvas) {
-        RectF rectF = new RectF(getLeft(), getTop(), getRight(), getBottom());
+        RectF rectF = new RectF(0, mRectTop, getRight(), getBottom());
         canvas.drawRect(rectF, mBgPaint);
         if (strokeWidth > 0) {
             canvas.drawRect(rectF, mStrokePaint);
         }
         float progressLength = (float) mProgress / mMaxProgress * getWidth();
-        RectF progressRect = new RectF(getLeft(), getTop(), progressLength, getBottom());
+        canvas.drawText((int) mProgress + "%", progressLength, mRectTop - mProgressPaint.descent(), mProgressPaint);
+        RectF progressRect = new RectF(0, mRectTop, progressLength, getBottom());
         canvas.drawRect(progressRect, mProgressPaint);
     }
 
-    public int getMaxProgress() {
+    public float getMaxProgress() {
         return mMaxProgress;
     }
 
@@ -192,12 +195,12 @@ public class MultipleProgressBar extends View {
         this.mMaxProgress = maxProgress;
     }
 
-    public void setProgress(int progress) {
+    public void setProgress(float progress) {
         progress *= 100;
         if (progress > mMaxProgress) {
             progress = mMaxProgress;
         }
         this.mProgress = Math.abs(progress);
-        this.invalidate();
+        invalidate();
     }
 }

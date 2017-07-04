@@ -70,7 +70,7 @@ public class API {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("name", name);
         parameters.put("password", password);
-        HttpManager.post(UrlConfig.USER_LOGIN, parameters, callback);
+        HttpManager.postFullPath(UrlConfig.USER_LOGIN, parameters, callback);
     }
 
     public static void testPost(UserForLogin userForLogin, HttpCallback callback) {

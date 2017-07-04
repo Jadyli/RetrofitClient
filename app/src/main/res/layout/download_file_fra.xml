@@ -23,10 +23,10 @@
             android:text="全部开始"
             android:textAllCaps="false"
             android:textColor="#ffffffff"
-            android:textSize="18dp" />
+            android:textSize="14dp" />
 
         <Button
-            android:id="@+id/btn_fra_download_stop_all"
+            android:id="@+id/btn_fra_download_pause_all"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
@@ -36,20 +36,20 @@
             android:text="全部暂停"
             android:textAllCaps="false"
             android:textColor="#ffffffff"
-            android:textSize="18dp" />
+            android:textSize="14dp" />
 
         <Button
-            android:id="@+id/btn_fra_download_continue_all"
+            android:id="@+id/btn_fra_download_stop_all"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_weight="1"
             android:background="@color/colorPrimary"
-            android:text="继续下载"
+            android:text="全部停止"
             android:textAllCaps="false"
             android:textColor="#ffffffff"
-            android:textSize="18dp" />
+            android:textSize="14dp" />
 
         <Button
             android:id="@+id/btn_fra_download_cancel_all"
@@ -62,7 +62,7 @@
             android:text="全部取消"
             android:textAllCaps="false"
             android:textColor="#ffffffff"
-            android:textSize="18dp" />
+            android:textSize="14dp" />
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView

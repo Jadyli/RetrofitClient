@@ -34,6 +34,10 @@ public class DownloadFileAdapter extends RecyclerView.Adapter<DownloadFileAdapte
         notifyDataSetChanged();
     }
 
+    public List<DownloadInfo> getDownloadInfoList() {
+        return downloadInfoList;
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.download_file_adapter_item, parent, false);
@@ -43,6 +47,24 @@ public class DownloadFileAdapter extends RecyclerView.Adapter<DownloadFileAdapte
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final DownloadInfo downloadInfo = downloadInfoList.get(position);
+        switch (downloadInfo.getState()) {
+            case DownloadInfo.DOWNLOAD:
+                holder.btnDownloadItem.setText("暂停");
+                break;
+            case DownloadInfo.PAUSE:
+                holder.btnDownloadItem.setText("继续");
+                break;
+            case DownloadInfo.START:
+                holder.btnDownloadItem.setText("开始");
+                break;
+            case DownloadInfo.STOP:
+            case DownloadInfo.ERROR:
+                holder.btnDownloadItem.setText("重新下载");
+                break;
+            case DownloadInfo.FINISH:
+                holder.btnDownloadItem.setText("重新下载");
+                break;
+        }
         downloadInfo.setListener(new DownloadFileListener() {
             @Override
             public void onNext(Object o) {
@@ -50,11 +72,12 @@ public class DownloadFileAdapter extends RecyclerView.Adapter<DownloadFileAdapte
 
             @Override
             public void onComplete() {
+                holder.btnDownloadItem.setText("重新下载");
             }
 
             @Override
-            public void updateProgress(long contentRead, long contentLength, boolean completed) {
-                holder.pbDownloadItem.setProgress((int) (contentRead / contentLength));
+            public void updateProgress(float contentRead, long contentLength, boolean completed) {
+                holder.pbDownloadItem.setProgress(contentRead / contentLength);
             }
 
             @Override
@@ -70,6 +93,10 @@ public class DownloadFileAdapter extends RecyclerView.Adapter<DownloadFileAdapte
                         holder.btnDownloadItem.setText("继续");
                         downloadManager.pause(downloadInfo);
                         break;
+                    case DownloadInfo.PAUSE:
+                        holder.btnDownloadItem.setText("暂停");
+                        downloadManager.startDown(downloadInfo);
+                        break;
                     case DownloadInfo.STOP:
                     case DownloadInfo.ERROR:
                     case DownloadInfo.START:
@@ -78,6 +105,14 @@ public class DownloadFileAdapter extends RecyclerView.Adapter<DownloadFileAdapte
                         downloadManager.restartDownload(downloadInfo);
                         break;
                 }
+            }
+        });
+        holder.btnDeleteItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DownloadManager.getInstance().remove(downloadInfo);
+                downloadInfoList.remove(position);
+                notifyDataSetChanged();
             }
         });
     }
@@ -92,11 +127,13 @@ public class DownloadFileAdapter extends RecyclerView.Adapter<DownloadFileAdapte
 
         protected MultipleProgressBar pbDownloadItem;
         protected Button btnDownloadItem;
+        protected Button btnDeleteItem;
 
         public ViewHolder(View itemView) {
             super(itemView);
             pbDownloadItem = (MultipleProgressBar) itemView.findViewById(R.id.pb_download_item);
             btnDownloadItem = (Button) itemView.findViewById(R.id.btn_download_item);
+            btnDeleteItem = (Button) itemView.findViewById(R.id.btn_delete_item);
         }
     }
 

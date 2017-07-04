@@ -34,7 +34,6 @@ public class DownloadSubscriber<T> extends Subscriber<T> implements TransformPro
         if (downloadListener.get() != null) {
             downloadListener.get().onStart();
         }
-        downloadInfo.setState(DownloadInfo.START);
     }
 
     @Override
@@ -77,7 +76,9 @@ public class DownloadSubscriber<T> extends Subscriber<T> implements TransformPro
                             if (downloadInfo.getState() == DownloadInfo.PAUSE || downloadInfo.getState() == DownloadInfo.STOP)
                                 return;
                             downloadInfo.setState(DownloadInfo.DOWNLOAD);
-                            downloadListener.get().updateProgress(aLong, downloadInfo.getContentLength(), completed);
+                            if (downloadListener.get() != null) {
+                                downloadListener.get().updateProgress((float) aLong, downloadInfo.getContentLength(), completed);
+                            }
                         }
                     });
         }

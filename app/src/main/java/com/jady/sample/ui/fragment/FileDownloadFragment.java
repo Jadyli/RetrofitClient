@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.jady.retrofitclient.download.DownloadInfo;
+import com.jady.retrofitclient.download.DownloadManager;
 import com.jady.sample.R;
 import com.jady.sample.ui.adapter.DownloadFileAdapter;
 import com.jady.sample.utils.FileUtils;
@@ -22,7 +23,7 @@ import java.util.List;
 /**
  * Created by lipingfa on 2017/6/27.
  */
-public class FileDownloadFragment extends Fragment {
+public class FileDownloadFragment extends Fragment implements View.OnClickListener {
 
     protected View rootView;
     protected Button btnFraDownloadStartAll;
@@ -30,6 +31,8 @@ public class FileDownloadFragment extends Fragment {
     protected Button btnFraDownloadContinueAll;
     protected Button btnFraDownloadCancelAll;
     protected RecyclerView rvFraDownload;
+    private List<DownloadInfo> downloadInfoList;
+    private DownloadFileAdapter adapter;
 
     public static FileDownloadFragment newInstance() {
 
@@ -50,20 +53,45 @@ public class FileDownloadFragment extends Fragment {
 
     private void initView(View rootView) {
         btnFraDownloadStartAll = (Button) rootView.findViewById(R.id.btn_fra_download_start_all);
-        btnFraDownloadStopAll = (Button) rootView.findViewById(R.id.btn_fra_download_stop_all);
-        btnFraDownloadContinueAll = (Button) rootView.findViewById(R.id.btn_fra_download_continue_all);
+        btnFraDownloadStartAll.setOnClickListener(FileDownloadFragment.this);
+        btnFraDownloadStopAll = (Button) rootView.findViewById(R.id.btn_fra_download_pause_all);
+        btnFraDownloadStopAll.setOnClickListener(FileDownloadFragment.this);
+        btnFraDownloadContinueAll = (Button) rootView.findViewById(R.id.btn_fra_download_stop_all);
+        btnFraDownloadContinueAll.setOnClickListener(FileDownloadFragment.this);
         btnFraDownloadCancelAll = (Button) rootView.findViewById(R.id.btn_fra_download_cancel_all);
+        btnFraDownloadCancelAll.setOnClickListener(FileDownloadFragment.this);
         rvFraDownload = (RecyclerView) rootView.findViewById(R.id.rv_fra_download);
 
-        DownloadFileAdapter adapter = new DownloadFileAdapter(getActivity());
-        List<DownloadInfo> downloadInfoList = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            DownloadInfo downloadInfo = new DownloadInfo("https://pro-app-qn.fir.im/03a7c474e9846cac29d93cf9417eda9dbb2c1eee.apk?attname=%E5%8A%A0%E7%8F%AD%E7%AE%A1%E5%AE%B6_v3.0.0_qntest_com.qeeniao.mobile.recordincomej_0703_1635.apk_3.0.0.apk&e=1499075336&token=LOvmia8oXF4xnLh0IdH05XMYpH6ENHNpARlmPc-T:yJbpba26XIcfxNNn08YKTVbk6nY=",
-                    FileUtils.getInternalDir(getActivity(), FileUtils.HTTP_PATH, true) + File.pathSeparator + "加班管家" + i + ".apk");
+        adapter = new DownloadFileAdapter(getActivity());
+        downloadInfoList = new ArrayList<>();
+        String[] urls = {
+                "http://oitnotj58.bkt.clouddn.com/apk/v2.0/%E5%8A%A0%E7%8F%AD%E7%AE%A1%E5%AE%B6_v2.0.0_invitefriends_com.qeeniao.mobile.recordincomej_0426_2129.apk",
+                "http://oitnotj58.bkt.clouddn.com/%E5%8A%A0%E7%8F%AD%E7%AE%A1%E5%AE%B6_v1.3.0_qeeniao_com.qeeniao.mobile.recordincomej_0504_1038.apk",
+                "http://oitnotj58.bkt.clouddn.com/%E5%8A%A0%E7%8F%AD%E7%AE%A1%E5%AE%B6_v1.3.0%E7%BA%BF%E4%B8%8A%E5%8F%AF%E7%99%BB%E5%BD%95%E7%89%88.apk",
+                "http://oitnotj58.bkt.clouddn.com/QQ.png",
+                "http://oitnotj58.bkt.clouddn.com/QQspace.png"};
+        for (int i = 0; i < urls.length; i++) {
+            DownloadInfo downloadInfo = new DownloadInfo(urls[i],
+                    FileUtils.getInternalDir(getActivity(), FileUtils.HTTP_PATH, true) + File.pathSeparator + "加班管家" + i);
             downloadInfoList.add(downloadInfo);
         }
         adapter.setDownloadInfoList(downloadInfoList);
         rvFraDownload.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvFraDownload.setAdapter(adapter);
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.btn_fra_download_start_all) {
+            DownloadManager.getInstance().addAll(downloadInfoList);
+            DownloadManager.getInstance().startAll();
+        } else if (view.getId() == R.id.btn_fra_download_pause_all) {
+            DownloadManager.getInstance().pauseAll();
+        } else if (view.getId() == R.id.btn_fra_download_stop_all) {
+            DownloadManager.getInstance().stopAll();
+        } else if (view.getId() == R.id.btn_fra_download_cancel_all) {
+            DownloadManager.getInstance().removeAll();
+        }
+        adapter.notifyDataSetChanged();
     }
 }

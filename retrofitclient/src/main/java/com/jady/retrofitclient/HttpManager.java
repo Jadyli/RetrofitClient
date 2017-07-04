@@ -171,7 +171,7 @@ public class HttpManager {
         HttpManager.baseUrl = baseUrl;
     }
 
-    public String getBaseUrl() {
+    public static String getBaseUrl() {
         return baseUrl;
     }
 
@@ -204,8 +204,8 @@ public class HttpManager {
      * @param parameters 请求参数
      * @param callback   网络回调
      */
-    public void getFullPath(String fullUrl, Map<String, Object> parameters, HttpCallback callback) {
-        getRetrofitBuilder("").build().getFullPath(mContext, fullUrl, parameters, callback);
+    public static void getFullPath(String fullUrl, Map<String, Object> parameters, HttpCallback callback) {
+        getRetrofitBuilder(baseUrl).build().getFullPath(mContext, fullUrl, parameters, callback);
     }
 
     /**
@@ -295,10 +295,6 @@ public class HttpManager {
         getRetrofitBuilder(baseUrl).build().postByBody(mContext, url, body, callback);
     }
 
-//    public void postNotEncoded(String url, Map<String, Object> parameters, HttpCallback callback) {
-//        getRetrofitBuilder(baseUrl).addDecodeParameterInteceptor(RecodeParameterInteceptor.create()).build().post(mContext, url, parameters, callback);
-//    }
-
     /**
      * 发送Post请求
      *
@@ -306,22 +302,9 @@ public class HttpManager {
      * @param parameters 请求参数
      * @param callback   网络回调
      */
-    public void postFullPath(String fullUrl, Map<String, Object> parameters, HttpCallback callback) {
-        getRetrofitBuilder("").build().postFullPath(mContext, fullUrl, parameters, callback);
+    public static void postFullPath(String fullUrl, Map<String, Object> parameters, HttpCallback callback) {
+        getRetrofitBuilder(baseUrl).build().postFullPath(mContext, fullUrl, parameters, callback);
     }
-
-//    /**
-//     * 发送Post请求
-//     *
-//     * @param url        请求相对地址，地址共同部分前缀在{@link #getRetrofitBuilder()}中设置
-//     * @param parameters 请求参数
-//     */
-//    public Observable post(String url, Map<String, Object> parameters) {
-//        RetrofitClient retrofitManager = RetrofitClient.getInstance(mContext);
-//        CommonRequest request = retrofitManager.getRequest();
-//        return request.doPost(url, parameters)
-//                .compose(retrofitManager.getSchedulerTransformer());
-//    }
 
     /**
      * 上传文件
