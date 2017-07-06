@@ -1,9 +1,6 @@
 package com.jady.retrofitclient;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -14,7 +11,6 @@ import com.jady.retrofitclient.download.DownloadManager;
 import com.jady.retrofitclient.interceptor.OffLineIntercept;
 import com.jady.retrofitclient.interceptor.UploadFileInterceptor;
 import com.jady.retrofitclient.listener.DownloadFileListener;
-import com.jady.retrofitclient.listener.TransformProgressListener;
 
 import java.io.File;
 import java.util.HashMap;
@@ -312,10 +308,10 @@ public class HttpManager {
      * @param url       文件上传相对地址
      * @param filePath  本地文件路径
      * @param fileDes   文件描述
-     * @param iProgress 回调
+     * @param fileResponseResult 回调
      */
-    public static void uploadFile(String url, String filePath, String fileDes, TransformProgressListener iProgress) {
-        uploadFile(url, filePath, fileDes, false, iProgress);
+    public static void uploadFile(String url, String filePath, String fileDes, FileResponseResult fileResponseResult) {
+        uploadFile(url, filePath, fileDes, false, fileResponseResult);
     }
 
     /**
@@ -324,50 +320,50 @@ public class HttpManager {
      * @param fullUrl   文件上传绝对地址
      * @param filePath  本地文件路径
      * @param fileDes   文件描述
-     * @param iProgress 回调
+     * @param fileResponseResult 回调
      */
-    public void uploadFileFullPath(String fullUrl, String filePath, String fileDes, TransformProgressListener iProgress) {
-        uploadFile(fullUrl, filePath, fileDes, true, iProgress);
+    public void uploadFileFullPath(String fullUrl, String filePath, String fileDes, FileResponseResult fileResponseResult) {
+        uploadFile(fullUrl, filePath, fileDes, true, fileResponseResult);
     }
 
-    private static void uploadFile(String url, String filePath, String fileDes, boolean useFullUrl, final TransformProgressListener iProgress) {
-        final Handler handler = new Handler(Looper.getMainLooper()) {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                if (msg.what == 1000) {
-                    iProgress.onProgress(msg.arg1, msg.arg2, msg.arg1 >= msg.arg2);
-                } else {
-                    if (msg.obj != null && (msg.obj instanceof String)) {
-                        iProgress.onFailed((String) msg.obj);
-                    }
-                }
-            }
-        };
-
-        FileResponseResult fileResponseResult = new FileResponseResult() {
-            @Override
-            public void onExecuting(long progress, long total, boolean done) {
-                Message message = new Message();
-                message.what = 1000;
-                message.arg1 = (int) progress;
-                message.arg2 = (int) total;
-                handler.sendMessageDelayed(message, HANDER_DELAYED_TIME);
-            }
-
-            @Override
-            public void onFailure(Throwable throwable, String content) {
-                Message message = new Message();
-                message.what = 1001;
-                message.obj = content;
-                handler.sendMessageDelayed(message, HANDER_DELAYED_TIME);
-            }
-
-            @Override
-            public void onSuccess(Object o) {
-                iProgress.onProgress(100, 100, true);
-            }
-        };
+    private static void uploadFile(String url, String filePath, String fileDes, boolean useFullUrl, final FileResponseResult fileResponseResult) {
+//        final Handler handler = new Handler(Looper.getMainLooper()) {
+//            @Override
+//            public void handleMessage(Message msg) {
+//                super.handleMessage(msg);
+//                if (msg.what == 1000) {
+//                    iProgress.onProgress(msg.arg1, msg.arg2, msg.arg1 >= msg.arg2);
+//                } else {
+//                    if (msg.obj != null && (msg.obj instanceof String)) {
+//                        iProgress.onFailed((String) msg.obj);
+//                    }
+//                }
+//            }
+//        };
+//
+//        FileResponseResult fileResponseResult = new FileResponseResult() {
+//            @Override
+//            public void onExecuting(long progress, long total, boolean done) {
+//                Message message = new Message();
+//                message.what = 1000;
+//                message.arg1 = (int) progress;
+//                message.arg2 = (int) total;
+//                handler.sendMessageDelayed(message, HANDER_DELAYED_TIME);
+//            }
+//
+//            @Override
+//            public void onFailure(Throwable throwable, String content) {
+//                Message message = new Message();
+//                message.what = 1001;
+//                message.obj = content;
+//                handler.sendMessageDelayed(message, HANDER_DELAYED_TIME);
+//            }
+//
+//            @Override
+//            public void onSuccess(Object o) {
+//                iProgress.onProgress(100, 100, true);
+//            }
+//        };
 
         getRetrofitBuilder(baseUrl)
                 .addUploadFileInterceptor(UploadFileInterceptor.create())
@@ -380,10 +376,10 @@ public class HttpManager {
      *
      * @param url          文件上传相对地址
      * @param filePathList 本地文件路径
-     * @param iProgress    回调
+     * @param fileResponseResult    回调
      */
-    public static void uploadFiles(String url, List<String> filePathList, TransformProgressListener iProgress) {
-        uploadFiles(url, filePathList, false, iProgress);
+    public static void uploadFiles(String url, List<String> filePathList, FileResponseResult fileResponseResult) {
+        uploadFiles(url, filePathList, false, fileResponseResult);
     }
 
     /**
@@ -391,40 +387,40 @@ public class HttpManager {
      *
      * @param fullUrl      文件上传绝对地址
      * @param filePathList 本地文件路径
-     * @param iProgress    回调
+     * @param fileResponseResult    回调
      */
-    public void uploadFilesFullPath(String fullUrl, List<String> filePathList, TransformProgressListener iProgress) {
-        uploadFiles(fullUrl, filePathList, true, iProgress);
+    public void uploadFilesFullPath(String fullUrl, List<String> filePathList, FileResponseResult fileResponseResult) {
+        uploadFiles(fullUrl, filePathList, true, fileResponseResult);
     }
 
-    private static void uploadFiles(String url, List<String> filePathList, boolean useFullUrl, final TransformProgressListener iProgress) {
-        final Handler handler = new Handler(Looper.getMainLooper()) {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                iProgress.onProgress(msg.arg1, msg.arg2, msg.arg1 >= msg.arg2);
-            }
-        };
-
-        FileResponseResult fileResponseResult = new FileResponseResult() {
-            @Override
-            public void onExecuting(long progress, long total, boolean done) {
-                Message message = new Message();
-                message.arg1 = (int) progress;
-                message.arg2 = (int) total;
-                handler.sendMessageDelayed(message, HANDER_DELAYED_TIME);
-            }
-
-            @Override
-            public void onSuccess(Object o) {
-                iProgress.onProgress(100, 100, true);
-            }
-
-            @Override
-            public void onFailure(Throwable throwable, String content) {
-                iProgress.onFailed(content);
-            }
-        };
+    private static void uploadFiles(String url, List<String> filePathList, boolean useFullUrl, final FileResponseResult fileResponseResult) {
+//        final Handler handler = new Handler(Looper.getMainLooper()) {
+//            @Override
+//            public void handleMessage(Message msg) {
+//                super.handleMessage(msg);
+//                iProgress.onProgress(msg.arg1, msg.arg2, msg.arg1 >= msg.arg2);
+//            }
+//        };
+//
+//        FileResponseResult fileResponseResult = new FileResponseResult() {
+//            @Override
+//            public void onExecuting(long progress, long total, boolean done) {
+//                Message message = new Message();
+//                message.arg1 = (int) progress;
+//                message.arg2 = (int) total;
+//                handler.sendMessageDelayed(message, HANDER_DELAYED_TIME);
+//            }
+//
+//            @Override
+//            public void onSuccess(Object o) {
+//                iProgress.onProgress(100, 100, true);
+//            }
+//
+//            @Override
+//            public void onFailure(Throwable throwable, String content) {
+//                iProgress.onFailed(content);
+//            }
+//        };
 
         getRetrofitBuilder(baseUrl)
                 .addUploadFileInterceptor(UploadFileInterceptor.create())

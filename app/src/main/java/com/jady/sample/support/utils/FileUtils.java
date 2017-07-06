@@ -1,4 +1,4 @@
-package com.jady.sample.utils;
+package com.jady.sample.support.utils;
 
 import android.app.Activity;
 import android.content.ContentUris;

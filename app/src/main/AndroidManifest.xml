@@ -24,7 +24,7 @@
         </activity>
 
         <provider
-            android:name=".provider.CustemFileProvider"
+            android:name=".support.provider.CustemFileProvider"
             android:authorities="com.jady.sample.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">

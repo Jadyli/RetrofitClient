@@ -15,11 +15,11 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.jady.retrofitclient.listener.TransformProgressListener;
+import com.jady.retrofitclient.callback.FileResponseResult;
 import com.jady.sample.R;
 import com.jady.sample.api.API;
 import com.jady.sample.api.UrlConfig;
-import com.jady.sample.utils.FileUtils;
+import com.jady.sample.support.utils.FileUtils;
 import com.tbruyelle.rxpermissions.RxPermissions;
 
 import java.util.ArrayList;
@@ -126,21 +126,17 @@ public class FileUploadFragment extends Fragment implements View.OnClickListener
     private void uploadSingleFile(String path) {
         final ProgressDialog progressDialog = new ProgressDialog(getActivity());
         progressDialog.show();
-        API.testSingleFileUpload(UrlConfig.SINGLE_FILE_UPLOAD, path, "上传的文件", new TransformProgressListener() {
+        API.testSingleFileUpload(UrlConfig.SINGLE_FILE_UPLOAD, path, "上传的文件", new FileResponseResult() {
             @Override
-            public void onProgress(long contentRead, long contentLength, boolean completed) {
-//                int progress = (int) (contentRead / contentLength);
-//                Log.d(getClass().getSimpleName(), "upload progress:" + progress);
-//                progressDialog.setProgress(progress);
-                if (completed) {
-                    progressDialog.dismiss();
-                    return;
-                }
+            public void onSuccess() {
+                progressDialog.dismiss();
+                showToast("上传成功");
             }
 
             @Override
-            public void onFailed(String msg) {
-
+            public void onFailure(Throwable throwable, String content) {
+                progressDialog.dismiss();
+                showToast("上传失败：" + throwable.getMessage());
             }
         });
     }
@@ -148,20 +144,22 @@ public class FileUploadFragment extends Fragment implements View.OnClickListener
     private void uploadMultipleFile(List<String> pathList) {
         final ProgressDialog progressDialog = new ProgressDialog(getActivity());
         progressDialog.show();
-        API.testMultipleFileUpload(UrlConfig.MULTIPLE_FILE_UPLOAD, pathList, new TransformProgressListener() {
+        API.testMultipleFileUpload(UrlConfig.MULTIPLE_FILE_UPLOAD, pathList, new FileResponseResult() {
             @Override
-            public void onProgress(long contentRead, long contentLength, boolean completed) {
-                progressDialog.setProgress((int) (contentRead / contentLength));
-                if (completed) {
-                    progressDialog.dismiss();
-                    return;
-                }
+            public void onSuccess() {
+                progressDialog.dismiss();
+                showToast("上传成功");
             }
 
             @Override
-            public void onFailed(String msg) {
-
+            public void onFailure(Throwable throwable, String content) {
+                progressDialog.dismiss();
+                showToast("上传失败：" + throwable.getMessage());
             }
         });
+    }
+
+    private void showToast(String content) {
+        Toast.makeText(getActivity(), content, Toast.LENGTH_SHORT).show();
     }
 }

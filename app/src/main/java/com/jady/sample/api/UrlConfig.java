@@ -5,13 +5,7 @@ package com.jady.sample.api;
  */
 public class UrlConfig {
     //baseUrl
-    public static final String BASE_URL = "http://192.168.0.127:8080/retrofitclientserver/";
-    //图片列表
-    public static final String IMG_LIST = "list";
-    //最新图片
-    public static final String NEWS = "news";
-    //图片前缀
-    public static final String IMG_PREFIX = "http://tnfs.tngou.net/image";
+    public static final String BASE_URL = "http://192.168.0.100:8080/retrofitclientserver/";
 
     public static final String USER_INFO = "user/info";
     public static final String USER_LOGIN = "user/login";
@@ -20,4 +14,5 @@ public class UrlConfig {
     public static final String FEED_DELETE = "feed/delete";
     public static final String SINGLE_FILE_UPLOAD = "file/upload/single";
     public static final String MULTIPLE_FILE_UPLOAD = "file/upload/multiple";
+    public static final String DOUBAN_MOVIE_IN_THEATERS = "https://api.douban.com/v2/movie/in_theaters";
 }

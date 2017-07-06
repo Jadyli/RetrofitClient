@@ -6,8 +6,6 @@ import android.text.TextUtils;
 import com.jady.retrofitclient.callback.FileResponseResult;
 import com.jady.retrofitclient.callback.LoadingCallback;
 
-import java.io.IOException;
-
 import okhttp3.ResponseBody;
 import rx.Subscriber;
 
@@ -72,6 +70,7 @@ public class UploadSubscriber<T extends ResponseBody> extends Subscriber<T> {
         if (showLoadingDailog) {
             loadingCallback.onFinishLoading();
         }
+        callback.onSuccess();
     }
 
     @Override
@@ -86,13 +85,6 @@ public class UploadSubscriber<T extends ResponseBody> extends Subscriber<T> {
     public void onNext(T t) {
         if (t.contentLength() == 0) {
             return;
-        }
-        try {
-            String jsonString = new String(t.bytes());
-            callback.onSuccess(jsonString);
-        } catch (IOException e) {
-            e.printStackTrace();
-            callback.onFailure(e, e.getMessage());
         }
 //        Gson gson = new Gson();
 //        TypeAdapter<?> adapter = gson.getAdapter(callback.getGenericityType());

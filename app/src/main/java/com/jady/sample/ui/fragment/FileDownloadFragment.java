@@ -13,8 +13,8 @@ import android.widget.Button;
 import com.jady.retrofitclient.download.DownloadInfo;
 import com.jady.retrofitclient.download.DownloadManager;
 import com.jady.sample.R;
+import com.jady.sample.support.utils.FileUtils;
 import com.jady.sample.ui.adapter.DownloadFileAdapter;
-import com.jady.sample.utils.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;

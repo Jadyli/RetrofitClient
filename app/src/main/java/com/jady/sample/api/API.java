@@ -1,10 +1,10 @@
 package com.jady.sample.api;
 
-import android.support.annotation.IntRange;
+import android.text.TextUtils;
 
 import com.jady.retrofitclient.HttpManager;
+import com.jady.retrofitclient.callback.FileResponseResult;
 import com.jady.retrofitclient.callback.HttpCallback;
-import com.jady.retrofitclient.listener.TransformProgressListener;
 import com.jady.sample.bean.UserForLogin;
 
 import java.util.HashMap;
@@ -16,52 +16,9 @@ import java.util.Map;
  */
 public class API {
 
-    /**
-     * 获取图片列表
-     *
-     * @param category
-     * @param count
-     * @param page
-     * @param callback
-     */
-    public static void getImageList(@ImgClassify int category, int count, int page, HttpCallback callback) {
-        Map<String, Object> parameters = new HashMap<>();
-        if (category > 0) {
-            parameters.put("id", category);
-        }
-        if (count > 0) {
-            parameters.put("rows", count);
-        }
-        if (page > 0) {
-            parameters.put("page", page);
-        }
-        HttpManager.get(UrlConfig.IMG_LIST, parameters, callback);
-    }
-
-    /**
-     * 获取最新的图片列表
-     *
-     * @param keyId
-     * @param category
-     * @param count
-     */
-    public static void getLatestImgList(@IntRange(from = 1, to = 1000) int keyId, int category, int count) {
-        Map<String, Object> parameters = new HashMap<>();
-        if (keyId > 0) {
-            parameters.put("id", keyId);
-        }
-        if (category > 0) {
-            parameters.put("classify", category);
-        }
-        if (count > 0) {
-            parameters.put("rows", count);
-        }
-    }
-
     public static void testGet(HttpCallback callback) {
         HashMap<String, String> headers = new HashMap<>();
         headers.put("aaa", "adafd");
-        HttpManager.setTmpBaseUrl("http://192.168.0.127:8080/retrofitclientserver/");
         HttpManager.addTmpHeaders(headers);
         HttpManager.get(UrlConfig.USER_INFO, null, callback);
     }
@@ -90,11 +47,33 @@ public class API {
         HttpManager.deleteByBody(UrlConfig.FEED_DELETE, parameters, callback);
     }
 
-    public static void testSingleFileUpload(String url, String filePath, String fileDes, TransformProgressListener iProgress) {
-        HttpManager.uploadFile(url, filePath, fileDes, iProgress);
+    public static void testSingleFileUpload(String url, String filePath, String fileDes, FileResponseResult fileResponseResult) {
+        HttpManager.uploadFile(url, filePath, fileDes, fileResponseResult);
     }
 
-    public static void testMultipleFileUpload(String url, List<String> filePathList, TransformProgressListener iProgress) {
-        HttpManager.uploadFiles(url, filePathList, iProgress);
+    public static void testMultipleFileUpload(String url, List<String> filePathList, FileResponseResult fileResponseResult) {
+        HttpManager.uploadFiles(url, filePathList, fileResponseResult);
+    }
+
+    /**
+     * 获取电影列表
+     *
+     * @param start
+     * @param count
+     * @param city
+     * @param callback
+     */
+    public static void getMovieList(int start, int count, String city, HttpCallback callback) {
+        Map<String, Object> parameters = new HashMap<>();
+        if (start > 0) {
+            parameters.put("start", start);
+        }
+        if (count > 0) {
+            parameters.put("count", count);
+        }
+        if (!TextUtils.isEmpty(city)) {
+            parameters.put("city", city);
+        }
+        HttpManager.getFullPath(UrlConfig.DOUBAN_MOVIE_IN_THEATERS, parameters, callback);
     }
 }

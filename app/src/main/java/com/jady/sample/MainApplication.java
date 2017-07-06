@@ -2,7 +2,6 @@ package com.jady.sample;
 
 import android.app.Application;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
 import com.jady.retrofitclient.HttpManager;
 import com.jady.sample.api.UrlConfig;
 
@@ -26,6 +25,5 @@ public class MainApplication extends Application {
                 return headers;
             }
         });
-        Fresco.initialize(this);
     }
 }
