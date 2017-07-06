@@ -160,3 +160,6 @@ HttpManager.get(UrlConfig.USER_INFO, null, callback);
 ```
 
 具体使用方法可以参考库中的demo。
+
+
+服务器端代码参考：[RetrofitClientServer](https://github.com/Jadyli/RetrofitClientServer)
