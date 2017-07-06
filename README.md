@@ -160,4 +160,3 @@ HttpManager.get(UrlConfig.USER_INFO, null, callback);
 ```
 
 具体使用方法可以参考库中的demo。
-欢迎star和指正:[https://github.com/Jadyli/RetrofitClient](https://github.com/Jadyli/RetrofitClient)
