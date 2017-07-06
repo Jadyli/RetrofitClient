@@ -1,12 +1,11 @@
+# RetrofitClient
+
 RetrofitClient基于OKHttp和Retrofit封装了基本的GET、POST、PUT、DELET请求和文件上传下载方法，只需三步，快速集成。
 
-<img src="https://github.com/Jadyli/RetrofitClient/blob/master/image/1.gif?raw=true" width="350" height="600"/>
-
+<p><img src="https://github.com/Jadyli/RetrofitClient/blob/master/image/1.gif?raw=true" width="350" height="600"/>
 <img src="https://github.com/Jadyli/RetrofitClient/blob/master/image/2.gif?raw=true" width="350" height="600"/>
-
 <img src="https://github.com/Jadyli/RetrofitClient/blob/master/image/3.gif?raw=true" width="350" height="600"/>
-
-<img src="https://github.com/Jadyli/RetrofitClient/blob/master/image/4.gif?raw=true" width="350" height="600"/>
+<img src="https://github.com/Jadyli/RetrofitClient/blob/master/image/4.gif?raw=true" width="350" height="600"/></p>
 
 ## 1 在app或lib级别的build.gradle文件中添加依赖
 
