@@ -50,5 +50,5 @@ dependencies {
 //    compile 'io.reactivex.rxjava2:rxjava:2.0.6'
 }
 
-//apply from: "$rootProject.projectDir/dist/distInfo.gradle"
-//apply from: "$rootProject.projectDir/dist/bintray.gradle"
+apply from: "$rootProject.projectDir/dist/distInfo.gradle"
+apply from: "$rootProject.projectDir/dist/bintray.gradle"
