@@ -65,9 +65,9 @@ public class DownloadFileAdapter extends RecyclerView.Adapter<DownloadFileAdapte
                 holder.btnDownloadItem.setText("重新下载");
                 break;
         }
-        long progress = 0;
+        float progress = 0;
         if (downloadInfo.getContentLength() > 0) {
-            progress = downloadInfo.getReadLength() / downloadInfo.getContentLength();
+            progress = downloadInfo.getReadLength() / (float) downloadInfo.getContentLength();
         }
         holder.pbDownloadItem.setProgress(progress);
 

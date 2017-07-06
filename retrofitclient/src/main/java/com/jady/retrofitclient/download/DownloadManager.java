@@ -65,7 +65,7 @@ public class DownloadManager {
         if (!downloadInfos.contains(info)) {
             DownloadInterceptor interceptor = DownloadInterceptor.create(info, subscriber);
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
-            builder.connectTimeout(15, TimeUnit.SECONDS);
+            builder.connectTimeout(60, TimeUnit.SECONDS);
             builder.addInterceptor(interceptor);
             Retrofit.Builder retrofitBuilder = new Retrofit.Builder()
                     .client(builder.build())
@@ -161,8 +161,6 @@ public class DownloadManager {
         for (DownloadInfo info : downloadInfos) {
             pause(info);
         }
-        subscriberMap.clear();
-        downloadInfos.clear();
     }
 
     public Set<DownloadInfo> getDownloadInfos() {

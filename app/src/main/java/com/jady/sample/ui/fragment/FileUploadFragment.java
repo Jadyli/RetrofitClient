@@ -33,7 +33,6 @@ import static android.app.Activity.RESULT_OK;
  * Created by lipingfa on 2017/6/21.
  */
 public class FileUploadFragment extends Fragment implements View.OnClickListener {
-    protected View rootView;
     protected Button btnSingleFileUpload;
     protected TextView tvFile1Path;
     protected TextView tvFile2Path;
