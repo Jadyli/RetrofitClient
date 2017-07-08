@@ -5,7 +5,7 @@ package com.jady.sample.api;
  */
 public class UrlConfig {
     //baseUrl
-    public static final String BASE_URL = "http://192.168.0.100:8080/retrofitclientserver/";
+    public static final String BASE_URL = "http://123.206.219.27:8080/retrofitclientserver/";
 
     public static final String USER_INFO = "user/info";
     public static final String USER_LOGIN = "user/login";
