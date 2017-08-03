@@ -17,7 +17,7 @@ compile 'com.jady:retrofitclient:0.2.6'
 
 ```java
 HttpManager.init(this, UrlConfig.BASE_URL);
-HttpManager.getInstance().setOnGetHeadersListener(new HttpManager.OnGetHeadersListener() {
+HttpManager.setOnGetHeadersListener(new HttpManager.OnGetHeadersListener() {
       @Override
       public Map<String, String> getHeaders() {
           Map<String, String> headers = new HashMap<>();

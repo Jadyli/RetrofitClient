@@ -17,7 +17,7 @@ public class MainApplication extends Application {
         super.onCreate();
 
         HttpManager.init(this, UrlConfig.BASE_URL);
-        HttpManager.getInstance().setOnGetHeadersListener(new HttpManager.OnGetHeadersListener() {
+        HttpManager.setOnGetHeadersListener(new HttpManager.OnGetHeadersListener() {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();

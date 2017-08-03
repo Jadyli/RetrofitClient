@@ -57,7 +57,7 @@ public class HttpManager {
         Map<String, String> getHeaders();
     }
 
-    public void setOnGetHeadersListener(OnGetHeadersListener onGetHeadersListener) {
+    public static void setOnGetHeadersListener(OnGetHeadersListener onGetHeadersListener) {
         HttpManager.onGetHeadersListener = onGetHeadersListener;
     }
 
@@ -189,7 +189,7 @@ public class HttpManager {
      * @param parameters
      * @param callback
      */
-    public void syncGet(String url, Map<String, Object> parameters, HttpCallback callback) {
+    public static void syncGet(String url, Map<String, Object> parameters, HttpCallback callback) {
         getRetrofitBuilder(baseUrl).build().syncGet(mContext, url, parameters, callback);
     }
 
@@ -222,7 +222,7 @@ public class HttpManager {
      * @param body     请求体
      * @param callback 网络回调
      */
-    public <T> void putByBody(String url, T body, HttpCallback callback) {
+    public static <T> void putByBody(String url, T body, HttpCallback callback) {
         getRetrofitBuilder(baseUrl).build().putByBody(mContext, url, body, callback);
     }
 
@@ -243,7 +243,7 @@ public class HttpManager {
      * @param url      请求相对地址，地址共同部分前缀在{@link #getRetrofitBuilder(String)}中设置
      * @param callback 网络回调
      */
-    public void delete(String url, Map<String, Object> parameters, HttpCallback callback) {
+    public static void delete(String url, Map<String, Object> parameters, HttpCallback callback) {
         getRetrofitBuilder(baseUrl).build().delete(mContext, url, parameters, callback);
     }
 
@@ -253,7 +253,7 @@ public class HttpManager {
      * @param url      请求相对地址，地址共同部分前缀在{@link #getRetrofitBuilder(String)}中设置
      * @param callback 网络回调
      */
-    public void delete(String url, HttpCallback callback) {
+    public static void delete(String url, HttpCallback callback) {
         getRetrofitBuilder(baseUrl).build().delete(mContext, url, callback);
     }
 
@@ -275,7 +275,7 @@ public class HttpManager {
      * @param parameters
      * @param callback
      */
-    public void syncPost(String url, Map<String, Object> parameters, HttpCallback callback) {
+    public static void syncPost(String url, Map<String, Object> parameters, HttpCallback callback) {
         getRetrofitBuilder(baseUrl).build().syncPost(mContext, url, parameters, callback);
     }
 
@@ -322,7 +322,7 @@ public class HttpManager {
      * @param fileDes   文件描述
      * @param fileResponseResult 回调
      */
-    public void uploadFileFullPath(String fullUrl, String filePath, String fileDes, FileResponseResult fileResponseResult) {
+    public static void uploadFileFullPath(String fullUrl, String filePath, String fileDes, FileResponseResult fileResponseResult) {
         uploadFile(fullUrl, filePath, fileDes, true, fileResponseResult);
     }
 
@@ -389,7 +389,7 @@ public class HttpManager {
      * @param filePathList 本地文件路径
      * @param fileResponseResult    回调
      */
-    public void uploadFilesFullPath(String fullUrl, List<String> filePathList, FileResponseResult fileResponseResult) {
+    public static void uploadFilesFullPath(String fullUrl, List<String> filePathList, FileResponseResult fileResponseResult) {
         uploadFiles(fullUrl, filePathList, true, fileResponseResult);
     }
 
@@ -428,7 +428,7 @@ public class HttpManager {
                 .uploadFiles(url, filePathList, useFullUrl, fileResponseResult);
     }
 
-    public void download(String url, String savePath, DownloadFileListener listener) {
+    public static void download(String url, String savePath, DownloadFileListener listener) {
         DownloadInfo info = new DownloadInfo(url, savePath);
         info.setState(DownloadInfo.START);
         info.setListener(listener);
@@ -437,7 +437,7 @@ public class HttpManager {
         downloadManager.startDown(info);
     }
 
-    public void download(DownloadInfo info) {
+    public static void download(DownloadInfo info) {
         DownloadManager downloadManager = DownloadManager.getInstance();
         downloadManager.startDown(info);
     }
