@@ -2,6 +2,7 @@ package com.jady.sample.ui.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,31 +46,31 @@ public class DownloadFileAdapter extends RecyclerView.Adapter<DownloadFileAdapte
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder viewHolder, final int position) {
         final DownloadInfo downloadInfo = downloadInfoList.get(position);
         switch (downloadInfo.getState()) {
             case DownloadInfo.DOWNLOAD:
-                holder.btnDownloadItem.setText("暂停");
+                viewHolder.btnDownloadItem.setText("暂停");
                 break;
             case DownloadInfo.PAUSE:
-                holder.btnDownloadItem.setText("继续");
+                viewHolder.btnDownloadItem.setText("继续");
                 break;
             case DownloadInfo.START:
-                holder.btnDownloadItem.setText("开始");
+                viewHolder.btnDownloadItem.setText("开始");
                 break;
             case DownloadInfo.STOP:
             case DownloadInfo.ERROR:
-                holder.btnDownloadItem.setText("重新下载");
+                viewHolder.btnDownloadItem.setText("重新下载");
                 break;
             case DownloadInfo.FINISH:
-                holder.btnDownloadItem.setText("重新下载");
+                viewHolder.btnDownloadItem.setText("重新下载");
                 break;
         }
         float progress = 0;
         if (downloadInfo.getContentLength() > 0) {
             progress = downloadInfo.getReadLength() / (float) downloadInfo.getContentLength();
         }
-        holder.pbDownloadItem.setProgress(progress);
+        viewHolder.pbDownloadItem.setProgress(progress);
 
         downloadInfo.setListener(new DownloadFileListener() {
             @Override
@@ -78,46 +79,47 @@ public class DownloadFileAdapter extends RecyclerView.Adapter<DownloadFileAdapte
 
             @Override
             public void onComplete() {
-                holder.btnDownloadItem.setText("重新下载");
+                viewHolder.btnDownloadItem.setText("重新下载");
             }
 
             @Override
             public void updateProgress(float contentRead, long contentLength, boolean completed) {
-                holder.pbDownloadItem.setProgress(contentRead / contentLength);
+                Log.d("DownloadTest", viewHolder.btnDownloadItem.getText() + downloadInfo.getSavePath());
+                viewHolder.pbDownloadItem.setProgress(contentRead / contentLength);
             }
 
             @Override
             public void onError(Throwable e) {
             }
         });
-        holder.btnDownloadItem.setOnClickListener(new View.OnClickListener() {
+        viewHolder.btnDownloadItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DownloadManager downloadManager = DownloadManager.getInstance();
                 switch (downloadInfo.getState()) {
                     case DownloadInfo.DOWNLOAD:
-                        holder.btnDownloadItem.setText("继续");
+                        viewHolder.btnDownloadItem.setText("继续");
                         downloadManager.pause(downloadInfo);
                         break;
                     case DownloadInfo.PAUSE:
-                        holder.btnDownloadItem.setText("暂停");
+                        viewHolder.btnDownloadItem.setText("暂停");
                         downloadManager.startDown(downloadInfo);
                         break;
                     case DownloadInfo.STOP:
                     case DownloadInfo.ERROR:
                     case DownloadInfo.START:
                     case DownloadInfo.FINISH:
-                        holder.btnDownloadItem.setText("暂停");
+                        viewHolder.btnDownloadItem.setText("暂停");
                         downloadManager.restartDownload(downloadInfo);
                         break;
                 }
             }
         });
-        holder.btnDeleteItem.setOnClickListener(new View.OnClickListener() {
+        viewHolder.btnDeleteItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DownloadManager.getInstance().remove(downloadInfo);
-                downloadInfoList.remove(position);
+                downloadInfoList.remove(downloadInfo);
                 notifyDataSetChanged();
             }
         });

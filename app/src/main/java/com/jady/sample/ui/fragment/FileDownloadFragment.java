@@ -72,7 +72,7 @@ public class FileDownloadFragment extends Fragment implements View.OnClickListen
                 "http://oitnotj58.bkt.clouddn.com/QQspace.png"};
         for (int i = 0; i < urls.length; i++) {
             DownloadInfo downloadInfo = new DownloadInfo(urls[i],
-                    FileUtils.getInternalDir(getActivity(), FileUtils.HTTP_PATH, true) + File.pathSeparator + "加班管家" + i);
+                    FileUtils.getInternalDir(getActivity(), FileUtils.HTTP_PATH, true) + File.pathSeparator + "第" + i + "条");
             downloadInfoList.add(downloadInfo);
         }
         adapter.setDownloadInfoList(downloadInfoList);

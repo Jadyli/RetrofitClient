@@ -54,11 +54,11 @@ public class DownloadManager {
     }
 
     public void addDownloadInfo(DownloadInfo info) {
+        info.setState(DownloadInfo.DOWNLOAD);
         if (info == null || subscriberMap.get(info.getUrl()) != null) {
             subscriberMap.get(info.getUrl()).setDownloadInfo(info);
             return;
         }
-        info.setState(DownloadInfo.DOWNLOAD);
         DownloadSubscriber subscriber = new DownloadSubscriber(info);
         subscriberMap.put(info.getUrl(), subscriber);
         CommonRequest commonRequest;
@@ -146,6 +146,7 @@ public class DownloadManager {
         if (subscriber != null) {
             subscriber.unsubscribe();
             subscriberMap.remove(info.getUrl());
+            downloadInfos.remove(info);
         }
     }
 
@@ -171,25 +172,16 @@ public class DownloadManager {
         Iterator<DownloadInfo> iterator = downloadInfos.iterator();
         while (iterator.hasNext()) {
             DownloadInfo info = iterator.next();
-            info.setState(DownloadInfo.START);
-            info.setReadLength(0);
-            info.setContentLength(0);
-            DownloadSubscriber subscriber = subscriberMap.get(info.getUrl());
-            if (subscriber != null) {
-                subscriber.unsubscribe();
-                subscriberMap.remove(info.getUrl());
-            }
-            File file = new File(info.getSavePath());
-            if (file.exists()) file.delete();
+            remove(info);
         }
-        subscriberMap.clear();
-        downloadInfos.clear();
     }
 
     public void remove(DownloadInfo info) {
         if (info == null) return;
         info.setState(DownloadInfo.START);
         info.setReadLength(0);
+        info.setRequest(null);
+        info.setListener(null);
         info.setContentLength(0);
         File file = new File(info.getSavePath());
         if (file.exists()) file.delete();

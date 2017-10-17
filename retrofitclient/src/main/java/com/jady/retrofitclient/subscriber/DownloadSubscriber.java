@@ -5,8 +5,6 @@ import com.jady.retrofitclient.download.DownloadManager;
 import com.jady.retrofitclient.listener.DownloadFileListener;
 import com.jady.retrofitclient.listener.TransformProgressListener;
 
-import java.lang.ref.SoftReference;
-
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -16,38 +14,38 @@ import rx.functions.Action1;
  */
 public class DownloadSubscriber<T> extends Subscriber<T> implements TransformProgressListener {
 
-    private SoftReference<DownloadFileListener> downloadListener;
+    private DownloadFileListener downloadListener;
     private DownloadInfo downloadInfo;
 
     public DownloadSubscriber(DownloadInfo downloadInfo) {
-        this.downloadListener = new SoftReference<DownloadFileListener>(downloadInfo.getListener());
+        this.downloadListener = downloadInfo.getListener();
         this.downloadInfo = downloadInfo;
     }
 
     public void setDownloadInfo(DownloadInfo downloadInfo) {
-        this.downloadListener = new SoftReference<DownloadFileListener>(downloadInfo.getListener());
+        this.downloadListener = downloadInfo.getListener();
         this.downloadInfo = downloadInfo;
     }
 
     @Override
     public void onStart() {
-        if (downloadListener.get() != null) {
-            downloadListener.get().onStart();
+        if (downloadListener != null) {
+            downloadListener.onStart();
         }
     }
 
     @Override
     public void onCompleted() {
-        if (downloadListener.get() != null) {
-            downloadListener.get().onComplete();
+        if (downloadListener != null) {
+            downloadListener.onComplete();
         }
         downloadInfo.setState(DownloadInfo.FINISH);
     }
 
     @Override
     public void onError(Throwable e) {
-        if (downloadListener.get() != null) {
-            downloadListener.get().onError(e);
+        if (downloadListener != null) {
+            downloadListener.onError(e);
         }
         DownloadManager.getInstance().remove(downloadInfo);
         downloadInfo.setState(DownloadInfo.ERROR);
@@ -55,8 +53,8 @@ public class DownloadSubscriber<T> extends Subscriber<T> implements TransformPro
 
     @Override
     public void onNext(T t) {
-        if (downloadListener.get() != null) {
-            downloadListener.get().onNext(t);
+        if (downloadListener != null) {
+            downloadListener.onNext(t);
         }
     }
 
@@ -68,7 +66,7 @@ public class DownloadSubscriber<T> extends Subscriber<T> implements TransformPro
             downloadInfo.setContentLength(total);
         }
         downloadInfo.setReadLength(progress);
-        if (downloadListener.get() != null) {
+        if (downloadListener != null) {
             rx.Observable.just(progress).observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Action1<Long>() {
                         @Override
@@ -76,8 +74,8 @@ public class DownloadSubscriber<T> extends Subscriber<T> implements TransformPro
                             if (downloadInfo.getState() == DownloadInfo.PAUSE || downloadInfo.getState() == DownloadInfo.STOP)
                                 return;
                             downloadInfo.setState(DownloadInfo.DOWNLOAD);
-                            if (downloadListener.get() != null) {
-                                downloadListener.get().updateProgress((float) aLong, downloadInfo.getContentLength(), completed);
+                            if (downloadListener != null) {
+                                downloadListener.updateProgress((float) aLong, downloadInfo.getContentLength(), completed);
                             }
                         }
                     });
