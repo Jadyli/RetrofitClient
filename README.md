@@ -32,8 +32,8 @@ init(Context context, String baseUrl)方法用来传项目的基础url，当然�
 ## 3 自动义请求回调
 
 参考：
-1.[ServerCallback](https://github.com/Jadyli/RetrofitClient/blob/beta_v0.2/app/src/main/java/com/jady/sample/api/callback/ServerCallback.java)
-2.[CommonCallback](https://github.com/Jadyli/RetrofitClient/blob/beta_v0.2/app/src/main/java/com/jady/sample/api/callback/CommonCallback.java)
+1.[ServerCallback](https://github.com/Jadyli/RetrofitClient/blob/master/app/src/main/java/com/jady/sample/api/callback/ServerCallback.java)
+2.[CommonCallback](https://github.com/Jadyli/RetrofitClient/blob/master/app/src/main/java/com/jady/sample/api/callback/CommonCallback.java)
 
 具体封装过程参考我的另一篇文章[android使用gson和泛型解析服务器回调的封装](http://blog.csdn.net/u013005791/article/details/72956132)。
 
@@ -41,8 +41,8 @@ init(Context context, String baseUrl)方法用来传项目的基础url，当然�
 ## 使用
 
 参考:
-1.[实例中的API类](https://github.com/Jadyli/RetrofitClient/blob/beta_v0.2/app/src/main/java/com/jady/sample/api/API.java)
-2.[实例中的BaseRequestFragment类](https://github.com/Jadyli/RetrofitClient/blob/beta_v0.2/app/src/main/java/com/jady/sample/fragment/BaseRequestFragment.java)
+1.[实例中的API类](https://github.com/Jadyli/RetrofitClient/blob/master/app/src/main/java/com/jady/sample/api/API.java)
+2.[实例中的BaseRequestFragment类](https://github.com/Jadyli/RetrofitClient/blob/master/app/src/main/java/com/jady/sample/ui/fragment/BaseRequestFragment.java)
 
 >GET请求
 
